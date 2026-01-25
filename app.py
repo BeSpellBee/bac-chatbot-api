@@ -4,8 +4,9 @@ from flask_cors import CORS
 import os
 
 app = Flask(__name__)
-CORS(app)  # Allows requests from your github.io website
+CORS(app)
 
+# Set OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Simple in-memory conversation history with limit
@@ -41,6 +42,7 @@ def chat():
     
     # Trim history if too long
     if len(conversation_history) > MAX_HISTORY_LENGTH:
+        # Keep the most recent messages (remove oldest)
         del conversation_history[0:2]
 
     system_message = {
@@ -62,13 +64,19 @@ def chat():
     }
 
     try:
+        # Using OpenAI SDK version 0.28.1 syntax
         response = openai.ChatCompletion.create(
-    model="gpt-4o-mini",
-    messages=[...]
-)
-bot_reply = response.choices[0].message.content
+            model="gpt-4o-mini",
+            messages=[
+                system_message,
+                *conversation_history[:-1]  # Send all except the current user message
+            ]
+        )
+        
+        bot_reply = response.choices[0].message.content
 
     except Exception as e:
+        # Log the error
         print(f"OpenAI API error: {str(e)}")
         return jsonify({
             "error": "Failed to generate response",
