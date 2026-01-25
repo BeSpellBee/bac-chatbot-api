@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify
-from openai import OpenAI
+import openai
 from flask_cors import CORS
 import os
 
 app = Flask(__name__)
 CORS(app)  # Allows requests from your github.io website
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Simple in-memory conversation history with limit
 conversation_history = []
