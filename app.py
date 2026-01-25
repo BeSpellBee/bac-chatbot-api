@@ -62,15 +62,11 @@ def chat():
     }
 
     try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                system_message,
-                *conversation_history[:-1]
-            ]
-        )
-        
-        bot_reply = response.choices[0].message.content
+        response = openai.ChatCompletion.create(
+    model="gpt-4o-mini",
+    messages=[...]
+)
+bot_reply = response.choices[0].message.content
 
     except Exception as e:
         print(f"OpenAI API error: {str(e)}")
