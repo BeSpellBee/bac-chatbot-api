@@ -77,13 +77,13 @@ LLCE_UNITS = {
         "grammar": {"page": 52, "topics": ["Les verbes de perception", "La forme du verbe après un modal"]},
         "pronunciation": {"page": 53, "topics": ["La voyelle longue /a:/", "La ION rule"]},
         "translation": {"page": 54},
-        "exam_practice": {"page": 55-57},
+        "exam_practice": {"page": "55-57"},
         "projects": [
             "Write opinion article on controversial art project",
             "Debate about exhibiting controversial artist"
         ]
-    },
-    # ... (similar detailed structure for other units - I'll add them on request)
+    }
+    # Add other units as needed
 }
 
 # Exam structure constants
@@ -109,217 +109,138 @@ EXAM_STRUCTURE = {
     "level": "B2/C1 CEFR"
 }
 
-@app.route("/")
-def home():
-    return jsonify({
-        "status": "running",
-        "service": "LLCE BAC English Specialty Assistant - Deep Dive Edition",
-        "version": "2.0",
-        "features": [
-            "Unit-specific resource mapping",
-            "Page-by-page textbook navigation",
-            "BAC exam integration",
-            "Guided analysis methodology",
-            "Portfolio building assistance"
+# ============ FIXED: DETECT LLCE UNIT FUNCTION ============
+def detect_llce_unit(user_lower):
+    """Detect which LLCE unit the question relates to with enhanced keyword matching."""
+    
+    # Print debug info
+    print(f"DEBUG - Detecting unit for: '{user_lower}'")
+    
+    unit_keywords = {
+        "africa": [
+            "africa", "african", "adichie", "conrad", "achebe", "things fall apart", 
+            "heart of darkness", "postcolonial", "post-colonial", "single story", 
+            "afrofuturism", "black panther", "lupita", "ngugi", "decolonising",
+            "colonial", "colonisation", "nigeria", "afrochella", "diaspora"
         ],
-        "curriculum_units": list(LLCE_UNITS.keys()),
-        "endpoints": {
-            "chat": "/chat (POST)",
-            "unit": "/unit/<unit_name> (GET)",
-            "search": "/search?q=<query> (GET)",
-            "exam": "/exam/<component> (GET)"
-        }
-    })
-
-@app.route("/unit/<unit_name>")
-def get_unit(unit_name):
-    """Get detailed information about a specific LLCE unit"""
-    unit = LLCE_UNITS.get(unit_name)
-    if not unit:
-        return jsonify({"error": "Unit not found"}), 404
-    return jsonify(unit)
-
-@app.route("/search")
-def search_textbook():
-    """Search for specific topics, authors, or terms in the textbook"""
-    query = request.args.get('q', '').lower()
-    if not query:
-        return jsonify({"error": "Search query required"}), 400
+        "art": [
+            "art", "modern art", "cummings", "e.e. cummings", "ee cummings", "e e cummings",
+            "poem", "poetry", "poet", "turner", "fighting temeraire", "guggenheim", 
+            "mae west", "hirst", "damien hirst", "haring", "keith haring", "quinn", 
+            "marc quinn", "catcher in the rye", "salinger", "warhol", "pop art", 
+            "modernist", "modernism", "controversial", "scandal", "guerrilla girls", 
+            "jeff koons", "rabbit sculpture", "amy winehouse", "hologram", "sky was candy",
+            "birds here", "inventing air"
+        ],
+        "debate": [
+            "debate", "debating", "rhetoric", "courtroom", "12 angry men", "twelve angry men",
+            "hamilton", "alexander hamilton", "obama", "barack obama", "political", "argument",
+            "win an argument", "free speech", "oratory", "rhetorical", "persuasion",
+            "richard iii", "shakespeare", "johnnie cochran", "oj simpson", "cabinet battle"
+        ],
+        "censorship": [
+            "censorship", "censor", "banned", "banning books", "hays code", "motion picture code",
+            "trigger warning", "free speech", "first amendment", "banned books week",
+            "arthur miller", "aviator", "martin scorsese", "freedom of speech", "museum of censored art"
+        ],
+        "emotions": [
+            "emotion", "emotions", "austen", "jane austen", "sense and sensibility", "brontë", "bronte",
+            "emily brontë", "wuthering heights", "porter", "max porter", "grief", "stiff upper lip",
+            "romanticism", "feel", "feeling", "boys don't cry", "the cure", "sigourney weaver",
+            "alien", "wonder woman", "fleabag", "young widow", "meeting place"
+        ],
+        "portraits": [
+            "portrait", "portraits", "fiction", "orwell", "george orwell", "maier", "vivian maier",
+            "metafiction", "self-representation", "self portrait", "fourth wall", "stranger than fiction",
+            "purple rose of cairo", "woody allen", "eminem", "stan", "j.k. rowling", "selfie"
+        ],
+        "bildungsroman": [
+            "bildungsroman", "coming of age", "grow", "growing up", "learning", "initiation",
+            "oliver twist", "dickens", "harry potter", "rowling", "angelou", "maya angelou",
+            "dead poets society", "boyhood", "calvin and hobbes", "barn owl", "role models",
+            "still i rise", "michelle obama"
+        ],
+        "lgbtq": [
+            "gay", "lgbtq", "lgbt", "aids", "1980s", "eighties", "maupin", "armistead maupin",
+            "kushner", "tony kushner", "angels in america", "castro", "san francisco", "act up",
+            "keith haring", "thom gunn", "missing poem", "aids crisis"
+        ],
+        "exploration": [
+            "exploration", "explore", "adventure", "space", "science fiction", "sci-fi", "travel",
+            "journey", "expedition", "alice in wonderland", "peter pan", "swallows and amazons",
+            "kipling", "uncharted", "mary kingsley", "astronaut", "space oddity", "david bowie",
+            "arrival", "final frontier", "space tourism"
+        ],
+        "music": [
+            "music", "song", "protest song", "festival", "heritage", "identity", "madonna",
+            "david bowie", "midnight oil", "bells are burning", "woody guthrie", "this land is your land",
+            "nina simone", "james brown", "bruce springsteen", "born in the usa", "star-spangled banner",
+            "god save the queen", "bob dylan", "notting hill carnival", "pianos for peace"
+        ],
+        "migration": [
+            "migration", "immigration", "immigrant", "diaspora", "journey", "integration", "exile",
+            "jacob lawrence", "ellis island", "the corrs", "natalie diaz", "joy luck club",
+            "amy tan", "hamilton mixtape", "barack obama", "great migration", "melting pot",
+            "salad bowl", "aero mexico"
+        ],
+        "food": [
+            "food", "taste", "cuisine", "culinary", "cooking", "eat", "shackleton", "endurance",
+            "west african cuisine", "martin parr", "richard blanco", "zadie smith", "white teeth",
+            "lion film", "gulliver's travels", "jonathan swift", "street food"
+        ]
+    }
     
-    results = []
+    # First, try exact matches for specific authors/works
+    for unit, keywords in unit_keywords.items():
+        for keyword in keywords:
+            if keyword in user_lower:
+                print(f"DEBUG - Matched unit '{unit}' with keyword '{keyword}'")
+                return unit
     
-    # Search through all units
-    for unit_key, unit in LLCE_UNITS.items():
-        # Check unit title
-        if query in unit['title'].lower():
-            results.append({
-                "type": "unit",
-                "title": unit['title'],
-                "unit": unit_key,
-                "pages": unit['pages']
-            })
-        
-        # Check texts
-        for text in unit.get('key_texts', []):
-            if query in text['title'].lower() or query in text.get('author', '').lower():
-                results.append({
-                    "type": "text",
-                    "title": text['title'],
-                    "author": text.get('author'),
-                    "unit": unit_key,
-                    "page": text['page']
-                })
-        
-        # Check authors
-        for author in unit.get('authors', []):
-            if query in author.lower():
-                results.append({
-                    "type": "author",
-                    "name": author,
-                    "unit": unit_key,
-                    "works": [t['title'] for t in unit.get('key_texts', []) if t.get('author') == author]
-                })
-    
-    return jsonify({
-        "query": query,
-        "results_count": len(results),
-        "results": results[:20]  # Limit to 20 results
-    })
+    # If no match found, return None (will trigger general response)
+    print("DEBUG - No unit matched")
+    return None
 
-@app.route("/exam/<component>")
-def get_exam_info(component):
-    """Get detailed information about exam components"""
-    if component in EXAM_STRUCTURE:
-        return jsonify(EXAM_STRUCTURE[component])
-    return jsonify({"error": "Exam component not found"}), 404
-
-@app.route("/chat", methods=["POST"])
-def chat():
-    data = request.get_json()
-    
-    if not data:
-        return jsonify({"error": "JSON data is required"}), 400
-    
-    user_message = data.get("message", "")
-    user_lower = user_message.lower()
-    
-    # Check if user wants textbook page references
-    wants_pages = any(term in user_lower for term in ['page', 'p.', 'where', 'find', 'in the book'])
-
-    if not user_message:
-        return jsonify({"error": "Message is required"}), 400
-
-    # Detect unit and topic
-    unit_key = detect_llce_unit(user_lower)
-    unit_data = LLCE_UNITS.get(unit_key, None)
-    
-    # Extract specific topic (poem, author, concept)
-    topic = extract_topic(user_message, unit_data)
-
-    # LLCE-SPECIFIC SYSTEM PROMPT with deep dive framework
-    system_prompt = f"""You are an expert LLCE (Langues, Littératures et Cultures Étrangères - English specialty) BAC examiner and tutor.
-
-CURRICULUM CONTEXT: You are teaching from the "Let's Meet Up! LLCE Tle" textbook.
-
-EXAM REQUIREMENTS:
-- Written: {EXAM_STRUCTURE['written']}
-- Oral: {EXAM_STRUCTURE['oral']}
-- Grand Oral: {EXAM_STRUCTURE['grand_oral']}
-- Target level: {EXAM_STRUCTURE['level']}
-
-YOUR PEDAGOGICAL APPROACH - THE "DEEP DIVE" FRAMEWORK:
-
-ALWAYS STRUCTURE RESPONSES IN 5 PHASES:
-
-1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT:
-   - Identify EXACT unit, pages, and documents
-   - Reference specific textbook materials by page number
-   - Connect to unit theme and focus sections
-
-2. 🎯 PRESENT THE CORE MATERIALS:
-   - List all relevant texts, images, videos from the textbook with page numbers
-   - Include focus sections, grammar/pronunciation resources
-   - Quote textbook questions directly
-
-3. 🔍 GUIDED ANALYSIS USING TEXTBOOK QUESTIONS:
-   - Walk through each textbook question step-by-step
-   - Provide methodology, not just answers
-   - Show HOW to analyze using course concepts
-   - Include sample analytical language at B2/C1 level
-
-4. ✨ BAC APPLICATION BRIDGE:
-   - Show how analysis connects to written synthesis
-   - Suggest oral portfolio integration with specific documents
-   - Propose Grand Oral question angles
-   - Address translation challenges if relevant
-
-5. 🚀 INTERACTIVE NEXT STEPS:
-   - Offer 2-3 specific follow-up pathways
-   - Suggest related materials to explore
-   - Propose practice exercises
-
-Keep responses in English at B2/C1 level. Be specific, not generic. Every answer should make the student feel like you've actually read their textbook."""
-
-    try:
-        if use_gemini:
-            # Prepare enhanced prompt with unit context
-            enhanced_prompt = system_prompt
-            
-            if unit_data:
-                enhanced_prompt += f"\n\nCURRENT UNIT CONTEXT:\n"
-                enhanced_prompt += f"Unit: {unit_data['title']} (pages {unit_data['pages']})\n"
-                enhanced_prompt += f"Theme: {unit_data.get('theme', 'N/A')}\n"
-                enhanced_prompt += f"Key authors: {', '.join(unit_data.get('authors', []))}\n"
-                
-                # Add specific resources if topic detected
-                if topic and 'key_texts' in unit_data:
-                    for text in unit_data['key_texts']:
-                        if topic.lower() in text['title'].lower() or topic.lower() in text.get('author', '').lower():
-                            enhanced_prompt += f"\nSTUDENT IS ASKING ABOUT: {text['title']} on page {text['page']}\n"
-                            enhanced_prompt += f"Textbook questions for this document: (See page {text['page']})\n"
-                            break
-            
-            enhanced_prompt += f"\nSTUDENT QUERY: {user_message}\n\nProvide a comprehensive LLCE-focused response following the 5-phase Deep Dive framework above."
-            
-            model = genai.GenerativeModel('gemini-1.5-flash')
-            response = model.generate_content(enhanced_prompt)
-            bot_reply = response.text
-        else:
-            # USE ENHANCED LLCE-SPECIFIC FALLBACKS with deep dive framework
-            bot_reply = generate_llce_deep_dive(user_message, user_lower, unit_key, unit_data, topic)
-            
-    except Exception as e:
-        print(f"API error: {str(e)}")
-        bot_reply = generate_llce_deep_dive(user_message, user_lower, unit_key, unit_data, topic)
-
-    return jsonify({
-        "reply": bot_reply,
-        "llce_unit": unit_key,
-        "unit_info": unit_data['title'] if unit_data else None,
-        "exam_relevance": detect_exam_component(user_lower),
-        "source": "gemini" if use_gemini else "llce_deep_dive",
-        "follow_up_suggestions": generate_follow_ups(unit_key, topic, user_lower)
-    })
+# ============ FIXED: DETECT EXAM COMPONENT FUNCTION ============
+def detect_exam_component(user_lower):
+    """Detect which exam component the question relates to."""
+    if any(word in user_lower for word in ['synthesis', 'written', '500 words', 'essay', 'synthèse', 'écrit']):
+        return "written_exam"
+    elif any(word in user_lower for word in ['oral', 'portfolio', 'presentation', 'q&a', 'dossier']):
+        return "oral_exam"
+    elif any(word in user_lower for word in ['grand oral', 'orientation', 'project', 'projet']):
+        return "grand_oral"
+    elif any(word in user_lower for word in ['translation', 'translate', '600 characters', 'traduction']):
+        return "translation"
+    return "general_preparation"
 
 def extract_topic(user_message: str, unit_data: Optional[Dict]) -> Optional[str]:
     """Extract specific topic from user message (poem title, author, concept)"""
-    # Check for poem titles
+    user_lower = user_message.lower()
+    
+    # Check for specific Cummings poems
+    if "sky was candy" in user_lower or "sky was can dy" in user_lower:
+        return "the sky was can dy"
+    if "birds here" in user_lower or "inventing air" in user_lower:
+        return "birds here,in ven ting air"
+    
+    # Check for poem titles in quotes
     poem_patterns = [
-        r'"([^"]+)"',  # Quoted text
-        r"'([^']+)'",   # Single-quoted text
-        r'poem.*?by\s+(\w+\s+\w+)',  # "poem by Author"
-        r'(\w+\s+\w+).*?poem'  # "Author poem"
+        r'"([^"]+)"',  # Double quotes
+        r"'([^']+)'",   # Single quotes
+        r'poem.*?by\s+([A-Za-z\.\s]+)',  # "poem by Author"
+        r'([A-Za-z\.\s]+).*?poem'  # "Author poem"
     ]
     
     for pattern in poem_patterns:
         match = re.search(pattern, user_message, re.IGNORECASE)
         if match:
-            return match.group(1)
+            return match.group(1).strip()
     
     # Check for author names in unit data
     if unit_data and 'authors' in unit_data:
         for author in unit_data['authors']:
-            if author.lower() in user_message.lower():
+            if author.lower() in user_lower:
                 return author
     
     return None
@@ -348,8 +269,9 @@ def generate_follow_ups(unit_key: Optional[str], topic: Optional[str], user_lowe
             "Connect to the 'Romanticism' focus section on page 98"
         ]
     else:
+        unit_title = LLCE_UNITS.get(unit_key, {}).get('title', 'this unit') if unit_key else 'the LLCE curriculum'
         follow_ups = [
-            f"Explore other documents in the {LLCE_UNITS.get(unit_key, {}).get('title', 'this')} unit",
+            f"Explore other documents in {unit_title}",
             "Practice with the grammar exercises on the unit's grammar page",
             "Build your oral portfolio with documents from this unit"
         ]
@@ -360,10 +282,16 @@ def generate_llce_deep_dive(user_message: str, user_lower: str, unit_key: Option
                             unit_data: Optional[Dict], topic: Optional[str]) -> str:
     """Generate LLCE-specific deep dive responses following the 5-phase framework."""
     
+    # Override for Cummings if needed (backup in case detection fails)
+    if 'cummings' in user_lower and unit_key != 'art':
+        unit_key = 'art'
+        unit_data = LLCE_UNITS.get('art')
+        topic = 'cummings'
+    
     # UNIT-SPECIFIC DEEP DIVE RESPONSES
     
     # E.E. CUMMINGS DEEP DIVE (from page 40)
-    if unit_key == "art" and any(term in user_lower for term in ['cummings', 'poem', 'sky', 'birds']):
+    if unit_key == "art" and any(term in user_lower for term in ['cummings', 'poem', 'sky', 'birds', 'candy', 'e.e.']):
         return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
 - **LLCE Unit:** {unit_data['title']} (pages {unit_data['pages']})
 - **Theme:** {unit_data.get('theme')}
@@ -684,15 +612,4 @@ Compare Austen's representation of restrained emotion (Elinor) with Porter's con
     # GENERAL LLCE DEEP DIVE TEMPLATE
     else:
         unit_info = unit_data['title'] if unit_data else "General LLCE curriculum"
-        unit_pages = unit_data['pages'] if unit_data else "various pages"
-        
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_info} (pages {unit_pages})
-- **BAC English Specialty:** Langues, Littératures et Cultures Étrangères
-- **Focus:** Anglophone literature, culture, and critical analysis
-
-2. 🎯 PRESENT THE CORE MATERIALS
-Your textbook contains these resources related to your query:
-
-**Primary Documents:**
-Check
+        unit_pages = unit_data
