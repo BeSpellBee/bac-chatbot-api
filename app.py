@@ -17,6 +17,162 @@ else:
     use_gemini = False
     print("Using fallback mode - no Gemini API key configured")
 
+# ============ NEW: PAGE-SPECIFIC QUESTION DATABASE ============
+PAGE_QUESTIONS = {
+    40: {
+        "title": "E.E. Cummings Poems",
+        "unit": "art",
+        "author": "E.E. Cummings",
+        "content": [
+            {
+                "type": "poem",
+                "title": "the sky was can dy",
+                "text": "the sky was can dy lu mi nous edible spry pinks shy lem ons",
+                "questions": [
+                    {
+                        "number": 1,
+                        "question": "Present in one sentence the subject of the two poems.",
+                        "answer": "The first poem captures the fragmented perception of a colorful sunset through broken syntax, while the second poem depicts birds as creators who 'invent' the air through flight and song, metaphorically representing the poet's own creative process."
+                    },
+                    {
+                        "number": 2,
+                        "question": "Read Let's focus on... Modernist poetry, p. 48. Identify what makes these poems modern and draw a parallel with modernist poetry.",
+                        "answer": "These poems are modern because they favor intellect over emotion, use common speech arranged unconventionally, feature freedom of form with words spilling across the page, and abandon rigorous syntax so meaning emerges from spatial arrangement. This parallels modernist poetry's revolt against convention, replacing traditional meter with visual experimentation."
+                    },
+                    {
+                        "number": 3,
+                        "question": "Explain how this original form gives access to the meaning of the poems.",
+                        "answer": "The form is functional—it enacts the experience it describes. In 'the sky was can dy', words split across lines mimic how we perceive a sunset as separate sensations, with 'can dy' suggesting sweetness and isolated syllables forcing slow reading that mimics gradual light emergence. In 'birds here,in ven ting air', 'in ven ting' split suggests ongoing creation, 'U' isolated invites reader participation, and scattered words mimic birds scattered across the sky."
+                    },
+                    {
+                        "number": 4,
+                        "question": "During a lecture in Harvard, E.E. Cummings told the students: 'If poetry is your goal, you've got to forget all about punishments and all about rewards.' Write down three questions you could ask him about his statement.",
+                        "answer": "1. 'When you say forget punishments and rewards, are you asking poets to ignore public reception entirely, or simply to prioritize artistic vision over it?'\n2. 'Your poems were initially rejected by publishers who found them incomprehensible—did you ever doubt your experimental approach when facing these punishments?'\n3. 'If a poet creates work that no one can understand, does the poetry still achieve its goal, or does communication with an audience matter?'"
+                    }
+                ]
+            },
+            {
+                "type": "poem",
+                "title": "birds here,in ven ting air",
+                "text": "birds here,in ven ting air U Ising Tw iligh t's vas tness",
+                "questions": []  # Questions are covered in the first poem's questions since they ask about "the two poems"
+            }
+        ]
+    },
+    21: {
+        "title": "Chinua Achebe - Things Fall Apart",
+        "unit": "africa",
+        "author": "Chinua Achebe",
+        "content": [
+            {
+                "type": "text",
+                "title": "Things Fall Apart excerpt",
+                "questions": [
+                    {
+                        "number": 1,
+                        "question": "In the first paragraph, pick out the change Umuofia had undergone and show how it had spread.",
+                        "answer": "The church had come and led many astray. It had spread beyond just the low-born and outcast to include worthy men like Ogbuofi Ugunna, who had taken two titles and cut the anklet of his titles to join the Christians."
+                    },
+                    {
+                        "number": 2,
+                        "question": "Explain why the justice system was not fair.",
+                        "answer": "The District Commissioner judged cases in ignorance, using court messengers from Umuru who were foreigners, arrogant, and high-handed. They were called 'kotma' and 'Ash-Buttocks' due to their ash-colored shorts."
+                    },
+                    {
+                        "number": 3,
+                        "question": "List the arguments explaining how colonisation happened so smoothly.",
+                        "answer": "1. The white man came quietly and peaceably with religion\n2. Africans were amused at his foolishness and allowed him to stay\n3. He won over African brothers who then helped uphold his government\n4. He put a knife in the things that held the clan together"
+                    }
+                ]
+            }
+        ]
+    },
+    25: {
+        "title": "Chimamanda Ngozi Adichie - The Danger of a Single Story",
+        "unit": "africa",
+        "author": "Chimamanda Ngozi Adichie",
+        "content": [
+            {
+                "type": "text",
+                "title": "The Danger of a Single Story",
+                "questions": [
+                    {
+                        "number": 1,
+                        "question": "Pick out words showing how Africans are commonly seen by Americans.",
+                        "answer": "The text suggests Africans are commonly seen through stereotypes and single stories—reductive narratives that fail to capture complexity and diversity."
+                    },
+                    {
+                        "number": 2,
+                        "question": "List the novels and people she mentions and define what 'African authenticity' is according to them.",
+                        "answer": "Adichie mentions various African writers who present authentic, multifaceted representations of African life, challenging the single story."
+                    },
+                    {
+                        "number": 3,
+                        "question": "Explain what it means to be 'African' for Chimamanda Ngozi Adichie.",
+                        "answer": "For Adichie, being African means embracing complexity, multiplicity, and the right to self-definition. It means resisting the 'single story' imposed by Western narratives and recognizing the diversity of 54 countries and thousands of cultures."
+                    }
+                ]
+            }
+        ]
+    },
+    90: {
+        "title": "Jane Austen - Sense and Sensibility",
+        "unit": "emotions",
+        "author": "Jane Austen",
+        "content": [
+            {
+                "type": "text",
+                "title": "Sense and Sensibility excerpt",
+                "questions": [
+                    {
+                        "number": 1,
+                        "question": "List the physical signs related to emotions and match them with each character.",
+                        "answer": "Marianne: countenance glowing with sudden delight, started up, pronouncing his name in a tone of affection, face crimsoned over, exclaimed in a voice of the greatest emotion. Willoughby: complexion changed, embarrassment returned, held her hand only for a moment, evidently struggling for composure. Elinor: turned involuntarily to Marianne, watched his countenance, tried to screen Marianne from observation."
+                    },
+                    {
+                        "number": 2,
+                        "question": "Find the words and expressions that describe the three characters' behaviours. Read Let's focus on... Stiff upper lip (p. 99) and match them with the social conventions of the time.",
+                        "answer": "Elinor embodies 'sense' and the stiff upper lip—she remains composed, tries to screen Marianne, and watches others without betraying emotion. Marianne embodies 'sensibility'—she expresses feelings openly, exclaims, and cannot hide her emotions. Willoughby struggles between genuine feeling and social expectation, trying to appear composed while his complexion betrays him."
+                    },
+                    {
+                        "number": 3,
+                        "question": "Explain how the title of the book reflects the characters' personalities.",
+                        "answer": "The title directly reflects the two sisters: Elinor represents 'Sense' (reason, restraint, social awareness, hiding feelings) while Marianne represents 'Sensibility' (emotion, spontaneity, public feeling, vulnerability). The novel explores the tension between these approaches and suggests a balance is needed."
+                    }
+                ]
+            }
+        ]
+    },
+    96: {
+        "title": "Emily Brontë - Wuthering Heights",
+        "unit": "emotions",
+        "author": "Emily Brontë",
+        "content": [
+            {
+                "type": "text",
+                "title": "Wuthering Heights excerpt",
+                "questions": [
+                    {
+                        "number": 1,
+                        "question": "Map out the characters in the text (names and relationships).",
+                        "answer": "Catherine (main speaker), Nelly (servant and listener), Edgar Linton (Catherine's husband), Heathcliff (Catherine's true love), and Linton (Edgar Linton)."
+                    },
+                    {
+                        "number": 2,
+                        "question": "Find elements which suggest extreme emotions and use them to explain the scene.",
+                        "answer": "Catherine says she would be 'extremely miserable' in heaven, describes being 'flung out' by angels, says she 'broke my heart with weeping,' and declares 'I am Heathcliff.' These extreme statements reveal her passionate nature and the intensity of her feelings for Heathcliff."
+                    },
+                    {
+                        "number": 3,
+                        "question": "Link the following terms to the male character they describe: moonbeam - lightning - frost - fire - foliage in the woods - eternal rocks. Deduce what emotions are suggested through the use of natural imagery.",
+                        "answer": "Linton is associated with moonbeam, frost, and foliage—suggesting coldness, temporality, and conventional beauty. Heathcliff is associated with lightning, fire, and eternal rocks—suggesting passion, danger, intensity, and permanence. The natural imagery reveals Catherine's view of Linton as socially acceptable but ultimately superficial, while Heathcliff represents a deeper, elemental connection."
+                    }
+                ]
+            }
+        ]
+    }
+}
+
 # LLCE Curriculum Units with detailed resources
 LLCE_UNITS = {
     "africa": {
@@ -77,13 +233,42 @@ LLCE_UNITS = {
         "grammar": {"page": 52, "topics": ["Les verbes de perception", "La forme du verbe après un modal"]},
         "pronunciation": {"page": 53, "topics": ["La voyelle longue /a:/", "La ION rule"]},
         "translation": {"page": 54},
-        "exam_practice": {"page": 55-57},
+        "exam_practice": {"page": "55-57"},
         "projects": [
             "Write opinion article on controversial art project",
             "Debate about exhibiting controversial artist"
         ]
     },
-    # ... (similar detailed structure for other units - I'll add them on request)
+    "emotions": {
+        "title": "I Feel, Therefore I Am",
+        "pages": "88-107",
+        "theme": "Expression des émotions",
+        "authors": ["Jane Austen", "Emily Brontë", "Max Porter", "The Cure"],
+        "key_texts": [
+            {"title": "Sense and Sensibility excerpt", "author": "Jane Austen", "page": 90, "type": "novel excerpt"},
+            {"title": "Grief is the Thing with Feathers excerpt", "author": "Max Porter", "page": 94, "type": "novel excerpt"},
+            {"title": "Wuthering Heights excerpt", "author": "Emily Brontë", "page": 96, "type": "novel excerpt"},
+            {"title": "Boys Don't Cry lyrics", "author": "The Cure", "page": 93, "type": "song lyrics"}
+        ],
+        "key_images": [
+            {"title": "Hellel and Hildebrand", "artist": "Frederick William Burton", "page": 91},
+            {"title": "Wonder Woman comic", "artist": "Charles Moulton", "page": 92},
+            {"title": "The Young Widow", "artist": "Edward Killingworth Johnson", "page": 95},
+            {"title": "The Meeting Place", "artist": "Paul Day", "page": 97}
+        ],
+        "key_videos": [
+            {"title": "Stiff Upper Lip", "page": 91, "code": "201lce031"},
+            {"title": "Sigourney Weaver interview", "page": 93, "code": "201lce033"},
+            {"title": "The Descendants clip", "page": 94, "code": "201lce034"},
+            {"title": "Fleabag wedding speech", "page": 97, "code": "201lce035"}
+        ],
+        "focus_sections": ["Romanticism", "Stiff upper lip"],
+        "grammar": {"page": 102, "topics": ["La phrase exclamative", "While, during et for"]},
+        "pronunciation": {"page": 103, "topics": ["Les voyelles /i/ et /i:/", "Prononciation des mots en -ate"]},
+        "translation": {"page": 104},
+        "exam_practice": {"page": 105}
+    }
+    # Other units can be added similarly
 }
 
 # Exam structure constants
@@ -114,20 +299,23 @@ def home():
     return jsonify({
         "status": "running",
         "service": "LLCE BAC English Specialty Assistant - Deep Dive Edition",
-        "version": "2.0",
+        "version": "3.0",
         "features": [
             "Unit-specific resource mapping",
             "Page-by-page textbook navigation",
             "BAC exam integration",
             "Guided analysis methodology",
-            "Portfolio building assistance"
+            "Portfolio building assistance",
+            "NEW: Page-specific question answering"
         ],
         "curriculum_units": list(LLCE_UNITS.keys()),
+        "pages_with_questions": list(PAGE_QUESTIONS.keys()),
         "endpoints": {
             "chat": "/chat (POST)",
             "unit": "/unit/<unit_name> (GET)",
             "search": "/search?q=<query> (GET)",
-            "exam": "/exam/<component> (GET)"
+            "exam": "/exam/<component> (GET)",
+            "page": "/page/<page_number> (GET) - NEW: Get questions for a specific page"
         }
     })
 
@@ -138,6 +326,13 @@ def get_unit(unit_name):
     if not unit:
         return jsonify({"error": "Unit not found"}), 404
     return jsonify(unit)
+
+@app.route("/page/<int:page_num>")
+def get_page(page_num):
+    """Get all questions and answers for a specific page"""
+    if page_num in PAGE_QUESTIONS:
+        return jsonify(PAGE_QUESTIONS[page_num])
+    return jsonify({"error": f"Page {page_num} not found in database"}), 404
 
 @app.route("/search")
 def search_textbook():
@@ -183,7 +378,7 @@ def search_textbook():
     return jsonify({
         "query": query,
         "results_count": len(results),
-        "results": results[:20]  # Limit to 20 results
+        "results": results[:20]
     })
 
 @app.route("/exam/<component>")
@@ -192,6 +387,41 @@ def get_exam_info(component):
     if component in EXAM_STRUCTURE:
         return jsonify(EXAM_STRUCTURE[component])
     return jsonify({"error": "Exam component not found"}), 404
+
+# ============ NEW FUNCTION: Extract page number from query ============
+def extract_page_number(user_message):
+    """Extract page number from query like 'page 40', 'p.40', or 'on page 40'"""
+    patterns = [
+        r'page\s+(\d+)',
+        r'p\.?\s*(\d+)',
+        r'pg\s*(\d+)',
+        r'on\s+page\s+(\d+)'
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, user_message.lower())
+        if match:
+            return int(match.group(1))
+    return None
+
+# ============ NEW FUNCTION: Generate page response ============
+def generate_page_response(page_num):
+    """Generate a formatted response for page-specific questions"""
+    if page_num not in PAGE_QUESTIONS:
+        return None
+    
+    page_data = PAGE_QUESTIONS[page_num]
+    response = f"📚 **PAGE {page_num}: {page_data['title']}**\n\n"
+    
+    for item in page_data['content']:
+        if item.get('title'):
+            response += f"**{item['title']}**\n\n"
+        
+        for q in item.get('questions', []):
+            response += f"**Question {q['number']}:** {q['question']}\n"
+            response += f"**Answer:** {q['answer']}\n\n"
+    
+    response += "💡 **Would you like me to explain any of these answers in more detail or help you with another page?**"
+    return response
 
 @app.route("/chat", methods=["POST"])
 def chat():
@@ -202,12 +432,25 @@ def chat():
     
     user_message = data.get("message", "")
     user_lower = user_message.lower()
-    
-    # Check if user wants textbook page references
-    wants_pages = any(term in user_lower for term in ['page', 'p.', 'where', 'find', 'in the book'])
 
     if not user_message:
         return jsonify({"error": "Message is required"}), 400
+
+    # ============ NEW: PRIORITY 1 - Check if asking about a specific page ============
+    page_num = extract_page_number(user_message)
+    if page_num:
+        page_response = generate_page_response(page_num)
+        if page_response:
+            return jsonify({
+                "reply": page_response,
+                "type": "page_response",
+                "page": page_num,
+                "source": "page_database"
+            })
+        # If page not in database, continue to normal flow but mention it
+        else:
+            # We'll let it fall through to normal processing, but add a note
+            pass
 
     # Detect unit and topic
     unit_key = detect_llce_unit(user_lower)
@@ -298,7 +541,8 @@ Keep responses in English at B2/C1 level. Be specific, not generic. Every answer
         "unit_info": unit_data['title'] if unit_data else None,
         "exam_relevance": detect_exam_component(user_lower),
         "source": "gemini" if use_gemini else "llce_deep_dive",
-        "follow_up_suggestions": generate_follow_ups(unit_key, topic, user_lower)
+        "follow_up_suggestions": generate_follow_ups(unit_key, topic, user_lower),
+        "page_detected": page_num if page_num else None
     })
 
 def extract_topic(user_message: str, unit_data: Optional[Dict]) -> Optional[str]:
@@ -333,34 +577,70 @@ def generate_follow_ups(unit_key: Optional[str], topic: Optional[str], user_lowe
             "Analyze the second Cummings poem: 'birds here,in ven ting air'",
             "Compare Cummings with another modernist poet from the unit",
             "Connect Cummings' style to the 'Modernist poetry' focus section on page 48",
-            "Practice writing a BAC synthesis paragraph using Cummings as an example"
+            "Practice writing a BAC synthesis paragraph using Cummings as an example",
+            "Try asking: 'What are the questions on page 40?'"
         ]
     elif unit_key == "africa":
         follow_ups = [
             "Compare Conrad's and Achebe's representations of Africa",
             "Explore the 'Afrofuturism' focus section on page 28",
-            "Prepare an oral presentation on 'The danger of a single story'"
+            "Prepare an oral presentation on 'The danger of a single story'",
+            "Try asking: 'What are the questions on page 21?'"
         ]
     elif unit_key == "emotions":
         follow_ups = [
             "Analyze the 'Stiff Upper Lip' concept in British culture",
             "Compare Austen's and Brontë's treatment of emotion",
-            "Connect to the 'Romanticism' focus section on page 98"
+            "Connect to the 'Romanticism' focus section on page 98",
+            "Try asking: 'What are the questions on page 90?'"
         ]
     else:
         follow_ups = [
             f"Explore other documents in the {LLCE_UNITS.get(unit_key, {}).get('title', 'this')} unit",
             "Practice with the grammar exercises on the unit's grammar page",
-            "Build your oral portfolio with documents from this unit"
+            "Build your oral portfolio with documents from this unit",
+            "Try asking about a specific page number (e.g., 'questions on page 40')"
         ]
     
     return follow_ups
 
+def detect_llce_unit(user_lower):
+    """Detect which LLCE unit the question relates to."""
+    unit_keywords = {
+        "africa": ["africa", "adichie", "conrad", "achebe", "postcolonial", "single story", "afrofuturism", "nigeria", "colonial"],
+        "art": ["art", "modern art", "cummings", "poem", "turner", "mae west", "hirst", "haring", "quinn", "salinger", "catcher"],
+        "debate": ["debate", "rhetoric", "courtroom", "12 angry men", "hamilton", "obama", "political", "shakespeare"],
+        "censorship": ["censorship", "banned", "hays code", "trigger warning", "free speech", "miller"],
+        "emotions": ["emotion", "austen", "brontë", "bronte", "porter", "romanticism", "feel", "grief", "cure", "boys don't cry"],
+        "portraits": ["portrait", "fiction", "orwell", "maier", "metafiction", "self-representation", "fourth wall"],
+        "bildungsroman": ["bildungsroman", "coming of age", "oliver twist", "harry potter", "angelou", "dickens", "rowling"],
+        "lgbtq": ["gay", "lgbtq", "aids", "1980s", "maupin", "kushner", "activism"],
+        "exploration": ["exploration", "adventure", "space", "science fiction", "travel", "journey", "kipling", "clarke"],
+        "music": ["music", "song", "protest", "festival", "heritage", "dylan", "simone", "springsteen"],
+        "migration": ["migration", "immigration", "diaspora", "journey", "integration", "lawrence", "tan", "smith"],
+        "food": ["food", "taste", "cuisine", "culinary", "culture", "swift", "blanco"]
+    }
+    
+    for unit, keywords in unit_keywords.items():
+        if any(keyword in user_lower for keyword in keywords):
+            return unit
+    return None
+
+def detect_exam_component(user_lower):
+    """Detect which exam component the question relates to."""
+    if any(word in user_lower for word in ['synthesis', 'written', '500 words', 'essay', 'synthèse', 'écrit']):
+        return "written_exam"
+    elif any(word in user_lower for word in ['oral', 'portfolio', 'presentation', 'q&a', 'dossier']):
+        return "oral_exam"
+    elif any(word in user_lower for word in ['grand oral', 'orientation', 'project', 'projet']):
+        return "grand_oral"
+    elif any(word in user_lower for word in ['translation', 'translate', '600 characters', 'traduction']):
+        return "translation"
+    return "general_preparation"
+
 def generate_llce_deep_dive(user_message: str, user_lower: str, unit_key: Optional[str], 
                             unit_data: Optional[Dict], topic: Optional[str]) -> str:
     """Generate LLCE-specific deep dive responses following the 5-phase framework."""
-    
-    # UNIT-SPECIFIC DEEP DIVE RESPONSES
     
     # E.E. CUMMINGS DEEP DIVE (from page 40)
     if unit_key == "art" and any(term in user_lower for term in ['cummings', 'poem', 'sky', 'birds']):
@@ -379,320 +659,4 @@ Your textbook provides these resources on E.E. Cummings:
 
 **Textbook Questions (page 40):**
 1. "Present in one sentence the subject of the two poems."
-2. "Read Let's focus on... Modernist poetry, p. 48. Identify what makes these poems modern and draw a parallel with modernist poetry."
-3. "Explain how this original form gives access to the meaning of the poems."
-4. "During a lecture in Harvard, E.E. Cummings told the students: 'If poetry is your goal, you've got to forget all about punishments and all about rewards.' Write down three questions you could ask him about his statement."
-
-**Visual Support:** The poems themselves are visual arrangements on the page
-
-**Additional Resources:**
-- Modernist poetry focus section (page 48)
-- E.E. Cummings biography (page 48)
-- Pronunciation exercises (page 53)
-- Translation page (page 54)
-
-3. 🔍 GUIDED ANALYSIS USING TEXTBOOK QUESTIONS
-
-**Question 1: "Present in one sentence the subject of the two poems."**
-
-*Methodology:* Look at the key words and visual arrangement to identify theme.
-
-- **Poem 1 ("the sky was can dy"):** The fragmented words ("can dy" for candy, "lu mi nous" for luminous, "spry pinks," "shy lem ons," "choco lates") suggest a sunset or sky painted in vibrant colors—the speaker is breaking down a visual experience into its component parts, just as the poem breaks words into syllables.
-
-- **Poem 2 ("birds here,in ven ting air"):** The words "inven ting" (inventing), "U" (you), "Ising" (I sing/Icing?), "Tw iligh t's" (twilight's), and "vas" (vast) suggest birds in flight creating/marking the air, possibly at twilight. The wordplay with "I sing" suggests the poet identifying with the birds' creative act.
-
-*Sample B2/C1 response:* "The first poem captures the fragmented perception of a colorful sunset through broken syntax, while the second poem depicts birds as creators who 'invent' the air through flight and song, metaphorically representing the poet's own creative process."
-
-**Question 2: "Identify what makes these poems modern and draw a parallel with modernist poetry."**
-
-*Methodology:* First, read the "Modernist poetry" section on page 48. Extract key characteristics, then apply them to Cummings.
-
-*Key characteristics from page 48:*
-- "Modernist poets tended to favour intellect over emotion"
-- "A more accessible, common speech language over the flowery style"
-- "The lyrics are often shorter, sharper"
-- "Freedom of form and content is at the heart of modern poetry"
-- "The syntax is not always rigorous"
-
-*Applying to Cummings:*
-- **Intellect over emotion:** Cummings forces readers to *think* about how language creates meaning—the visual fragmentation makes us analyze, not just feel.
-- **Common speech:** He uses simple words ("sky," "sweet," "birds") but arranges them unconventionally.
-- **Shorter, sharper:** The poems are brief; each fragment delivers impact.
-- **Freedom of form:** The words spill across the page unconventionally—this is radical formal freedom.
-- **Non-rigorous syntax:** Traditional grammar is abandoned; meaning emerges from spatial arrangement.
-
-*Sample analysis:* "Cummings exemplifies modernist poetry's revolt against convention. Like his contemporaries, he replaces traditional meter and rhyme with visual experimentation, forcing readers to construct meaning actively rather than passively receive it. His simple vocabulary democratizes poetry while his complex arrangements intellectualize the reading experience."
-
-**Question 3: "Explain how this original form gives access to the meaning of the poems."**
-
-*Methodology:* Look at specific formal choices and connect them to meaning.
-
-*For "the sky was can dy":*
-- Words split across lines mimic how we actually perceive a sunset—not as a unified whole, but as separate sensations (colors, light, sweetness)
-- "can dy" (candy) suggests the sweetness/pleasure of the visual experience
-- The isolation of "lu" and "mi" in "lu mi nous" forces slow reading, mimicking the gradual emergence of light
-- The vertical arrangement mirrors looking up at the sky
-
-*For "birds here,in ven ting air":*
-- "in ven ting" split suggests the active, ongoing process of creation
-- "U" (you) isolated invites reader participation
-- "Ising" plays on "I sing" and "icing"—both artistic creation and a surface being covered/transformed
-- The scattered words mimic birds scattered across the sky
-
-*Sample analysis:* "Cummings' form is not decorative but functional—it enacts the very experience it describes. The fragmented words in the first poem recreate the way light and color disperse across the evening sky, each isolated syllable demanding attention like an individual hue. Similarly, the scattered words of the second poem visualize birds in flight, their positions on the page creating a kind of word-skyscape. The reader must actively piece together meaning, just as one pieces together a visual scene."
-
-**Question 4: "Write down three questions you could ask him about his statement."**
-
-*Statement:* "If poetry is your goal, you've got to forget all about punishments and all about rewards."
-
-*Sample B2/C1 questions:*
-1. "When you say 'forget punishments and rewards,' are you asking poets to ignore public reception entirely, or simply to prioritize artistic vision over it?"
-
-2. "Your poems were initially rejected by publishers who found them incomprehensible—did you ever doubt your experimental approach when facing these 'punishments'?"
-
-3. "If a poet creates work that no one can understand, does the poetry still achieve its 'goal,' or does communication with an audience matter?"
-
-4. ✨ BAC APPLICATION BRIDGE
-
-**Written Synthesis Application:**
-Cummings would be an excellent example in a synthesis on "L'art qui fait débat" (Art that sparks debate). You could argue that Cummings provoked controversy not through shocking content but through revolutionary form—challenging what poetry *is*.
-
-*Sample synthesis paragraph:*
-"E.E. Cummings exemplifies how formal innovation can itself constitute artistic protest. His poems on page 40, with their fragmented words and unconventional layouts, sparked debate not about subject matter but about the very definition of poetry. By forcing readers to question whether text arranged visually on a page constitutes 'verse,' Cummings anticipated later debates about conceptual art and the boundaries of artistic media."
-
-**Oral Portfolio Integration:**
-For your oral presentation (10 minutes + 10 min Q&A), you could create a dossier including:
-1. One Cummings poem from page 40
-2. The "Modernist poetry" focus section from page 48
-3. A second controversial artwork from this unit (e.g., Hirst's "God Knows Why" on page 43)
-4. An article about artistic controversy (e.g., the Jeff Koons article referenced on page 46)
-
-*Possible presentation structure:*
-- Introduction: What makes art "controversial"? (2 min)
-- Document 1: Cummings' formal revolution (3 min)
-- Document 2: Hirst's material provocation (3 min)
-- Synthesis: Different ways art challenges conventions (2 min)
-
-**Grand Oral Connection:**
-Possible question: "How do artists use formal experimentation to challenge social and artistic conventions?"
-
-*This could connect to orientation projects in:*
-- Art history/criticism
-- Creative writing
-- Cultural journalism
-- Museum studies
-
-**Translation Practice (relevant to written exam):**
-Translate Cummings presents unique challenges. How would you render "the sky was can dy" in French while preserving the visual fragmentation? Possible approaches:
-- Keep English words but explain in commentary
-- Create equivalent French word splits ("le ciel était bon bon")
-- Focus on meaning in translation, discuss form in analysis
-
-5. 🚀 INTERACTIVE NEXT STEPS
-
-Would you like to:
-1. **Analyze the second Cummings poem** ("birds here,in ven ting air") in similar depth?
-2. **Compare Cummings with another modernist poet** mentioned in the focus section?
-3. **Explore how other artists in this unit** (Turner, Hirst, Haring) sparked different kinds of debates?
-4. **Practice writing a BAC synthesis paragraph** using Cummings as your main example?
-5. **Build an oral portfolio entry** around experimental poetry?
-
-Just let me know which pathway interests you!"""
-
-    # AFRICA UNIT DEEP DIVE
-    elif unit_key == "africa":
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_data['title']} (pages {unit_data['pages']})
-- **Theme:** {unit_data.get('theme')}
-- **Key Authors:** {', '.join(unit_data.get('authors', []))}
-- **Focus Sections:** {', '.join(unit_data.get('focus_sections', []))}
-
-2. 🎯 PRESENT THE CORE MATERIALS
-Your textbook provides these key documents:
-
-**Literary Texts:**
-- Joseph Conrad, "Heart of Darkness" excerpt (page 20)
-- Chinua Achebe, "Things Fall Apart" excerpt (page 21)
-- Mike Phillips, "Visions of Africa" essay (page 23)
-- Noo Saro-Wiwa, "Looking for Transwonderland" excerpt (page 34 - translation exercise)
-- Ngugi Wa Thiong'o, "Decolonising the Mind" excerpt (page 27)
-
-**Visual Documents:**
-- Satirical drawing on colonialism (page 20)
-- Andrew Gilbert installation (page 22)
-- Afrochella Festival poster (page 26)
-- Hank Willis Thomas, "Raise up" (page 29)
-
-**Video/Audio Resources:**
-- Lupita Nyong'o on Black Panther (page 22, code: 201lce005)
-- Dada Masilo interview: Swan Lake meets Africa (page 27, code: 201lce006)
-- Chimamanda Ngozi Adichie on "The danger of a single story" (referenced page 25)
-
-**Focus Sections (pages 28-29):**
-- Afrofuturism
-- Black Panther
-- From colonialism to postcolonialism
-- Author biographies
-
-**Language Resources:**
-- Grammar: Pluperfect simple, Superlatives (page 32)
-- Pronunciation: The two l consonants, Word stress (page 33)
-- Translation practice (page 34)
-- Exam practice: Synthesis (page 35)
-
-3. 🔍 GUIDED ANALYSIS - KEY QUESTIONS FROM YOUR TEXTBOOK
-
-**From page 20 (Conrad extract):**
-*Question 4: "Imagine the description of the white narrator by the African fireman."*
-
-*Methodology:* This exercise asks you to reverse the colonial gaze—to imagine how Africans perceived Europeans.
-
-*Key elements to consider:*
-- The fireman sees the narrator as strange, possibly threatening
-- The narrator's incomprehensible technology (steam gauges, pipes)
-- The power dynamic—the narrator is in charge but seems dependent on the fireman's labor
-- The condescending way the narrator describes the fireman would surely be reciprocated
-
-*Sample response:* "The pale man watches me tend the boiler with suspicious eyes. He thinks I don't understand this machine, but I know when the water runs low. He calls me 'savage' yet relies on my hands to keep the boat moving. His skin looks sickly, like someone who never sees sun. When he speaks to the other pale men, they laugh and point at me. I wonder what god they worship that makes them so cold."
-
-**From page 23 (Mike Phillips essay):**
-*Question 5: "Write a short article for an art magazine to present the exhibition and its goals."*
-
-*Structure for your article:*
-1. **Introduction:** Present the Tate exhibition "Seeing Africa" and its premise
-2. **The problem:** How 19th-century colonialism shaped European visions of Africa
-3. **The exhibition's purpose:** To uncover and challenge these inherited perspectives
-4. **Key works:** Mention specific artists and their approaches
-5. **Conclusion:** Why this matters today—how we can learn to see differently
-
-*Key vocabulary to include:*
-- "Biological determinism," "repressed sexuality," "romanticised vision"
-- "Colonising gaze," "psychological confrontation"
-- "Traumas and complexities of race"
-
-**From page 26 (Afrochella poster):**
-*Question 3: "Afrochella's 'purposes are to tell the New Africa story from a native's perspective.' Comment on this statement."*
-
-*Analysis points:*
-- Contrast with Conrad's external perspective (page 20)
-- Connection to Adichie's "single story" concept (page 25)
-- The importance of who tells the story
-- "New Africa" implies rejecting old stereotypes
-- "Native's perspective" emphasizes authenticity and self-representation
-
-4. ✨ BAC APPLICATION BRIDGE
-
-**Written Synthesis Topic (from page 35):**
-"Write a commentary on the three documents. Use the following guidelines:
-a. Explain how art helps link the past, present and future.
-b. Analyse how modern art illustrates Africa's development.
-c. Show how art is a powerful tool to create a new Africa."
-
-*Sample thesis:* "Through the juxtaposition of colonial and postcolonial works, contemporary African art demonstrates that reclaiming narrative control is essential to linking Africa's traumatic past with its innovative future."
-
-**Oral Portfolio Structure:**
-Your dossier could include:
-1. Achebe's "Things Fall Apart" excerpt (page 21) - the literary response to Conrad
-2. Afrochella poster (page 26) - contemporary cultural celebration
-3. Dada Masilo video (page 27) - artistic innovation blending traditions
-4. Your personal reflection on representation
-
-**Grand Oral Question Possibility:**
-"Can art heal historical trauma and reshape cultural identity?"
-
-5. 🚀 INTERACTIVE NEXT STEPS
-
-Choose your focus:
-1. Compare Conrad and Achebe's representations of Africa
-2. Explore Afrofuturism through the Black Panther focus section
-3. Analyze the Dada Masilo video and her fusion of traditions
-4. Prepare for the written synthesis on page 35
-5. Build your oral portfolio with documents from this unit"""
-
-    # EMOTIONS UNIT DEEP DIVE
-    elif unit_key == "emotions":
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_data['title']} (pages {unit_data['pages']})
-- **Theme:** {unit_data.get('theme')}
-- **Key Authors:** {', '.join(unit_data.get('authors', []))}
-- **Focus Sections:** {', '.join(unit_data.get('focus_sections', []))}
-
-2. 🎯 PRESENT THE CORE MATERIALS
-
-**Literary Texts:**
-- Jane Austen, "Sense and Sensibility" excerpt (page 90)
-- Max Porter, "Grief is the Thing with Feathers" excerpt (page 94)
-- Emily Brontë, "Wuthering Heights" excerpt (page 96)
-- Boys Don't Cry song lyrics (page 93)
-
-**Visual Documents:**
-- Frederick William Burton, "Hellel and Hildebrand" (page 91)
-- Wonder Woman comic (page 92)
-- Edward Killingworth Johnson, "The Young Widow" (page 95)
-- Paul Day, "The Meeting Place" statue (page 97)
-
-**Video/Audio Resources:**
-- Stiff Upper Lip video (page 91, code: 201lce031)
-- Sigourney Weaver interview (page 93, code: 201lce033)
-- The Descendants clip (page 94, code: 201lce034)
-- Fleabag wedding speech (page 97, code: 201lce035)
-
-**Focus Sections (pages 98-99):**
-- Romanticism
-- Stiff upper lip
-- Author biographies
-
-**Language Resources:**
-- Grammar: Exclamative sentences, While/during/for (page 102)
-- Pronunciation: /i/ and /i:/ vowels, -ate words (page 103)
-- Translation practice (page 104)
-- Exam practice (page 105)
-
-3. 🔍 GUIDED ANALYSIS
-
-**Key Question from page 90 (Austen extract):**
-*Question 3: "Explain how the title of the book reflects the characters' personalities."*
-
-*Analysis:*
-- **Sense (Elinor):** Reason, restraint, social awareness, hiding feelings
-- **Sensibility (Marianne):** Emotion, spontaneity, public feeling, vulnerability
-- The novel explores the tension between these approaches and suggests a balance is needed
-
-**Key Question from page 96 (Brontë extract):**
-*Question 4: "Explain in your own words the definition of love Catherine gives."*
-
-*Catherine's definition:*
-"I am Heathcliff — he's always, always in my mind — not as a pleasure, any more than I am always a pleasure to myself — but as my own being."
-
-*Analysis:* Love here is not about pleasure or happiness—it's about identity itself. Catherine doesn't love Heathcliff as a separate person; he IS her. This explains why marrying Edgar feels like self-betrayal.
-
-4. ✨ BAC APPLICATION BRIDGE
-
-**Possible Synthesis Topic:**
-"How do British texts represent the conflict between emotional expression and social restraint?"
-
-**Oral Portfolio Idea:**
-Compare Austen's representation of restrained emotion (Elinor) with Porter's contemporary grief narrative—how has the "stiff upper lip" evolved?
-
-5. 🚀 INTERACTIVE NEXT STEPS
-
-1. Analyze the "Stiff Upper Lip" concept in British culture
-2. Compare Austen and Brontë's treatment of emotion
-3. Explore the Romanticism focus section
-4. Practice translation with the page 104 exercise"""
-
-    # GENERAL LLCE DEEP DIVE TEMPLATE
-    else:
-        unit_info = unit_data['title'] if unit_data else "General LLCE curriculum"
-        unit_pages = unit_data['pages'] if unit_data else "various pages"
-        
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_info} (pages {unit_pages})
-- **BAC English Specialty:** Langues, Littératures et Cultures Étrangères
-- **Focus:** Anglophone literature, culture, and critical analysis
-
-2. 🎯 PRESENT THE CORE MATERIALS
-Your textbook contains these resources related to your query:
-
-**Primary Documents:**
-Check
+2. "Read Let's focus on... Modernist poetry, p. 48. Identify what makes these poems
