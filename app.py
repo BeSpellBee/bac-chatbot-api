@@ -3,7 +3,7 @@ import google.generativeai as genai
 from flask_cors import CORS
 import os
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 app = Flask(__name__)
 CORS(app)
@@ -17,73 +17,552 @@ else:
     use_gemini = False
     print("Using fallback mode - no Gemini API key configured")
 
-# LLCE Curriculum Units with detailed resources
+# ============ COMPREHENSIVE AUTHOR DATABASE ============
+# This contains every author from the syllabus with their details
+
+AUTHORS_DATABASE = {
+    # Unit 1: Africa
+    "chimamanda ngozi adichie": {
+        "name": "Chimamanda Ngozi Adichie",
+        "unit": "africa",
+        "nationality": "Nigerian",
+        "works": [
+            {"title": "The Danger of a Single Story", "type": "TED Talk", "page": 25, "description": "Speech about the dangers of monolithic narratives"},
+            {"title": "Purple Hibiscus", "type": "Novel", "page": 31, "description": "Coming-of-age story set in Nigeria"},
+            {"title": "Half of a Yellow Sun", "type": "Novel", "page": 31, "description": "Novel about the Nigerian Civil War"}
+        ],
+        "key_themes": ["Postcolonialism", "Feminism", "Identity", "Representation", "The danger of single stories"],
+        "biography": "Chimamanda Ngozi Adichie is a Nigerian writer whose work explores feminism, postcolonialism, and identity. She was born in Enugu, Nigeria in 1977.",
+        "fun_fact": "Her 2009 TED Talk 'The Danger of a Single Story' is one of the most-viewed TED Talks of all time.",
+        "focus_sections": ["Postcolonialism", "African literature"],
+        "related_authors": ["Chinua Achebe", "Ngugi Wa Thiong'o"]
+    },
+    "chinua achebe": {
+        "name": "Chinua Achebe",
+        "unit": "africa",
+        "nationality": "Nigerian",
+        "works": [
+            {"title": "Things Fall Apart", "type": "Novel", "page": 21, "description": "Seminal novel about pre-colonial Nigeria and the arrival of Europeans"},
+            {"title": "No Longer at Ease", "type": "Novel", "page": 29, "description": "Sequel to Things Fall Apart"},
+            {"title": "Arrow of God", "type": "Novel", "page": 29, "description": "Third novel in the trilogy"}
+        ],
+        "key_themes": ["Colonialism", "Igbo culture", "Tradition vs change", "Masculinity"],
+        "biography": "Chinua Achebe was a Nigerian novelist and critic, widely considered the father of modern African literature.",
+        "fun_fact": "Things Fall Apart has sold over 20 million copies worldwide and has been translated into 57 languages.",
+        "focus_sections": ["From colonialism to postcolonialism"],
+        "related_authors": ["Chimamanda Ngozi Adichie", "Joseph Conrad"]
+    },
+    "joseph conrad": {
+        "name": "Joseph Conrad",
+        "unit": "africa",
+        "nationality": "Polish-British",
+        "works": [
+            {"title": "Heart of Darkness", "type": "Novel", "page": 20, "description": "Novella about a voyage up the Congo River"}
+        ],
+        "key_themes": ["Colonialism", "Imperialism", "Darkness", "Civilization vs savagery"],
+        "biography": "Joseph Conrad was a Polish-British writer regarded as one of the greatest novelists in English. His experience as a mariner informed much of his work.",
+        "fun_fact": "The spaceship in the Ridley Scott film Alien is named Nostromo after Conrad's 1904 novel.",
+        "focus_sections": ["Colonialism"],
+        "related_authors": ["Chinua Achebe"]
+    },
+    "ngugi wa thiong'o": {
+        "name": "Ngugi Wa Thiong'o",
+        "unit": "africa",
+        "nationality": "Kenyan",
+        "works": [
+            {"title": "Decolonising the Mind", "type": "Essay", "page": 27, "description": "Essay on language and African literature"}
+        ],
+        "key_themes": ["Decolonization", "Language", "African identity", "Postcolonial theory"],
+        "biography": "Ngũgĩ wa Thiong'o is a Kenyan writer and academic who writes primarily in Gikuyu and English. He advocates for African literature in African languages.",
+        "fun_fact": "He was imprisoned in Kenya for his controversial play 'Ngaahika Ndeenda' and later went into exile.",
+        "focus_sections": ["Decolonising the mind"],
+        "related_authors": ["Chinua Achebe"]
+    },
+    "dada masilo": {
+        "name": "Dada Masilo",
+        "unit": "africa",
+        "nationality": "South African",
+        "works": [
+            {"title": "Swan Lake", "type": "Ballet", "page": 27, "description": "Reimagining of Swan Lake with African dance"},
+            {"title": "Romeo and Juliet", "type": "Ballet", "page": 29, "description": "Multiracial adaptation of Shakespeare"}
+        ],
+        "key_themes": ["Fusion", "Identity", "Tradition and modernity", "Challenging stereotypes"],
+        "biography": "Dada Masilo is a South African dancer and choreographer known for reinterpreting classical ballets with African dance and contemporary themes.",
+        "fun_fact": "In her gay interpretation of Swan Lake, the male dancer performing Odile is the only one to perform en pointe.",
+        "focus_sections": ["Afrofuturism", "Contemporary African art"],
+        "related_authors": []
+    },
+    
+    # Unit 2: Art (Modern Art)
+    "e.e. cummings": {
+        "name": "E.E. Cummings",
+        "unit": "art",
+        "nationality": "American",
+        "works": [
+            {"title": "the sky was can dy", "type": "Poem", "page": 40, "description": "Concrete poem about a sunset"},
+            {"title": "birds here,in ven ting air", "type": "Poem", "page": 40, "description": "Poem about birds and creation"}
+        ],
+        "key_themes": ["Modernism", "Visual poetry", "Individualism", "Love and nature"],
+        "biography": "Edward Estlin Cummings was an American poet, painter, and playwright known for his unconventional punctuation and syntax.",
+        "fun_fact": "Cummings was arrested by the French on suspicion of espionage during World War I.",
+        "focus_sections": ["Modernist poetry"],
+        "related_authors": ["Ezra Pound", "Hilda Doolittle"]
+    },
+    "j.m.w. turner": {
+        "name": "J.M.W. Turner",
+        "unit": "art",
+        "nationality": "British",
+        "works": [
+            {"title": "The Fighting Temeraire", "type": "Painting", "page": 38, "description": "Painting of a ship being towed to be scrapped"},
+            {"title": "Rain, Steam and Speed", "type": "Painting", "page": 51, "description": "Painting of a steam locomotive"},
+            {"title": "Snow Storm - Steam-Boat off a Harbour's Mouth", "type": "Painting", "page": 98, "description": "Dramatic storm scene"}
+        ],
+        "key_themes": ["Sublime", "Light", "Nature", "Industrial Revolution"],
+        "biography": "Joseph Mallord William Turner was a British landscape painter of the 18th and 19th centuries, known as the 'Painter of Light'.",
+        "fun_fact": "Turner was said to have had himself tied to the mast of a ship during a storm to experience the power of the sea.",
+        "focus_sections": ["Romanticism"],
+        "related_authors": ["John Constable"]
+    },
+    "mae west": {
+        "name": "Mae West",
+        "unit": "art",
+        "nationality": "American",
+        "works": [
+            {"title": "Sex", "type": "Play", "page": 45, "description": "Broadway play about prostitution that led to her arrest"},
+            {"title": "She Done Him Wrong", "type": "Film", "page": 45, "description": "Film that saved Paramount from bankruptcy"}
+        ],
+        "key_themes": ["Sexuality", "Censorship", "Female empowerment", "Controversy"],
+        "biography": "Mae West was an American actress, playwright, and sex symbol known for her bawdy double entendres and independent spirit.",
+        "fun_fact": "She served eight days in jail for 'Sex' and ate dinner with the warden and his wife.",
+        "focus_sections": ["Scandal in the arts"],
+        "related_authors": []
+    },
+    "damien hirst": {
+        "name": "Damien Hirst",
+        "unit": "art",
+        "nationality": "British",
+        "works": [
+            {"title": "God Knows Why", "type": "Sculpture", "page": 43, "description": "Artwork featuring dead animals in formaldehyde"}
+        ],
+        "key_themes": ["Death", "Controversy", "Consumerism", "Art as spectacle"],
+        "biography": "Damien Hirst is a British artist and art collector who is said to be the richest living artist, known for works exploring death.",
+        "fun_fact": "As a student, he worked in a mortuary, which influenced his work.",
+        "focus_sections": ["Contemporary art"],
+        "related_authors": ["Marc Quinn", "Keith Haring"]
+    },
+    "keith haring": {
+        "name": "Keith Haring",
+        "unit": "art",
+        "nationality": "American",
+        "works": [
+            {"title": "Andy Mouse 3", "type": "Artwork", "page": 47, "description": "Pop art featuring Andy Warhol as Mickey Mouse"}
+        ],
+        "key_themes": ["Pop Art", "AIDS awareness", "Street art", "Accessibility"],
+        "biography": "Keith Haring was an American artist whose graffiti-inspired drawings conveyed energy and optimism before his death from AIDS.",
+        "fun_fact": "He opened the Pop Shop in New York so everyone could buy affordable pieces of his work.",
+        "focus_sections": ["Pop Art"],
+        "related_authors": ["Andy Warhol", "Roy Lichtenstein"]
+    },
+    "marc quinn": {
+        "name": "Marc Quinn",
+        "unit": "art",
+        "nationality": "British",
+        "works": [
+            {"title": "Self", "type": "Sculpture", "page": 43, "description": "Self-portrait made of frozen blood"}
+        ],
+        "key_themes": ["Identity", "Mortality", "The body", "Self-portraiture"],
+        "biography": "Marc Quinn is a British visual artist whose work explores what it means to be human through subjects including the body and genetics.",
+        "fun_fact": "Each Self sculpture is made of 4.5 litres of his own blood taken over five months.",
+        "focus_sections": ["Contemporary art"],
+        "related_authors": ["Damien Hirst"]
+    },
+    "j.d. salinger": {
+        "name": "J.D. Salinger",
+        "unit": "art",
+        "nationality": "American",
+        "works": [
+            {"title": "The Catcher in the Rye", "type": "Novel", "page": 42, "description": "Controversial coming-of-age novel"}
+        ],
+        "key_themes": ["Alienation", "Teenage rebellion", "Authenticity", "Censorship"],
+        "biography": "J.D. Salinger was an American writer known for his reclusive nature and his novel The Catcher in the Rye.",
+        "fun_fact": "The Catcher in the Rye is both one of the most censored books in American schools and one of the most taught.",
+        "focus_sections": ["Scandal in 50s America"],
+        "related_authors": []
+    },
+    
+    # Unit 3: Debate
+    "william shakespeare": {
+        "name": "William Shakespeare",
+        "unit": "debate",
+        "nationality": "British",
+        "works": [
+            {"title": "Richard III", "type": "Play", "page": 60, "description": "Historical play featuring persuasive rhetoric"},
+            {"title": "Much Ado About Nothing", "type": "Play", "page": 71, "description": "Comedy with witty banter and debate"},
+            {"title": "Love's Labour's Lost", "type": "Play", "page": 60, "description": "Play about wit and wordplay"}
+        ],
+        "key_themes": ["Rhetoric", "Power", "Deception", "Politics"],
+        "biography": "William Shakespeare was an English playwright and poet, widely regarded as the greatest writer in the English language.",
+        "fun_fact": "In 1759, the character Cleopatra was played by a woman for the first time in the play's 150-year history.",
+        "focus_sections": ["The art of rhetoric"],
+        "related_authors": []
+    },
+    "alexander hamilton": {
+        "name": "Alexander Hamilton",
+        "unit": "debate",
+        "nationality": "American",
+        "works": [
+            {"title": "Cabinet Battle #2", "type": "Song", "page": 66, "description": "Rap battle from Hamilton musical"}
+        ],
+        "key_themes": ["Debate", "Politics", "Constitution", "Economics"],
+        "biography": "Alexander Hamilton was a Founding Father of the United States and the first Secretary of the Treasury.",
+        "fun_fact": "He was killed in a duel by Vice President Aaron Burr in 1804.",
+        "focus_sections": ["A great debater: Alexander Hamilton"],
+        "related_authors": ["Lin-Manuel Miranda"]
+    },
+    "barack obama": {
+        "name": "Barack Obama",
+        "unit": "debate",
+        "nationality": "American",
+        "works": [
+            {"title": "Immigration reform speech", "type": "Speech", "page": 62, "description": "Presidential speech on immigration"}
+        ],
+        "key_themes": ["Rhetoric", "Hope", "Change", "Unity"],
+        "biography": "Barack Obama was the 44th President of the United States and the first African American to hold the office.",
+        "fun_fact": "He collects Spider-Man and Conan the Barbarian comics.",
+        "focus_sections": ["The art of rhetoric"],
+        "related_authors": []
+    },
+    "lin-manuel miranda": {
+        "name": "Lin-Manuel Miranda",
+        "unit": "debate",
+        "nationality": "American",
+        "works": [
+            {"title": "Hamilton", "type": "Musical", "page": 66, "description": "Hip-hop musical about Alexander Hamilton"}
+        ],
+        "key_themes": ["Storytelling", "History", "Identity", "Musical innovation"],
+        "biography": "Lin-Manuel Miranda is an American actor, composer, and writer known for creating the musical Hamilton.",
+        "fun_fact": "He got the idea for Hamilton from reading a biography of Alexander Hamilton at an airport.",
+        "focus_sections": ["A great debater: Alexander Hamilton"],
+        "related_authors": ["Alexander Hamilton"]
+    },
+    "denzel washington": {
+        "name": "Denzel Washington",
+        "unit": "debate",
+        "nationality": "American",
+        "works": [
+            {"title": "The Great Debaters", "type": "Film", "page": 61, "description": "Film about a debate team"}
+        ],
+        "key_themes": ["Debate", "Civil rights", "Education", "Perseverance"],
+        "biography": "Denzel Washington is an American actor and director known for roles in Malcolm X, Training Day, and The Great Debaters.",
+        "fun_fact": "His oldest son, John David, was drafted by the NFL's St. Louis Rams in 2006.",
+        "focus_sections": ["The Great Debaters"],
+        "related_authors": []
+    },
+    
+    # Unit 5: Emotions
+    "jane austen": {
+        "name": "Jane Austen",
+        "unit": "emotions",
+        "nationality": "British",
+        "works": [
+            {"title": "Sense and Sensibility", "type": "Novel", "page": 90, "description": "Novel contrasting理性 and emotion"},
+            {"title": "Pride and Prejudice", "type": "Novel", "page": 101, "description": "Romantic novel with social satire"}
+        ],
+        "key_themes": ["Reason vs emotion", "Social class", "Marriage", "Irony"],
+        "biography": "Jane Austen was an English novelist known for her social commentary and irony in works like Pride and Prejudice.",
+        "fun_fact": "The 'Janeties' fan club was created in 1870 and still exists today!",
+        "focus_sections": ["Stiff upper lip"],
+        "related_authors": ["Emily Brontë"]
+    },
+    "emily brontë": {
+        "name": "Emily Brontë",
+        "unit": "emotions",
+        "nationality": "British",
+        "works": [
+            {"title": "Wuthering Heights", "type": "Novel", "page": 96, "description": "Gothic novel of passion and revenge"}
+        ],
+        "key_themes": ["Passion", "Romanticism", "Nature", "Obsession"],
+        "biography": "Emily Brontë was an English novelist and poet, best known for her only novel, Wuthering Heights.",
+        "fun_fact": "She was the fifth of six children, including Charlotte and Anne Brontë, who also became writers.",
+        "focus_sections": ["Romanticism"],
+        "related_authors": ["Jane Austen"]
+    },
+    "max porter": {
+        "name": "Max Porter",
+        "unit": "emotions",
+        "nationality": "British",
+        "works": [
+            {"title": "Grief is the Thing with Feathers", "type": "Novel", "page": 94, "description": "Experimental novel about grief"}
+        ],
+        "key_themes": ["Grief", "Loss", "Family", "Healing"],
+        "biography": "Max Porter is a British writer and bookseller, best known for his debut novel Grief is the Thing with Feathers.",
+        "fun_fact": "The title comes from Emily Dickinson's poem 'Hope is the thing with feathers'.",
+        "focus_sections": ["Grief"],
+        "related_authors": []
+    },
+    "the cure": {
+        "name": "The Cure",
+        "unit": "emotions",
+        "nationality": "British",
+        "works": [
+            {"title": "Boys Don't Cry", "type": "Song", "page": 93, "description": "Song about male emotional repression"}
+        ],
+        "key_themes": ["Emotional repression", "Masculinity", "Vulnerability"],
+        "biography": "The Cure is an English rock band formed in 1976, known for their Gothic rock and post-punk sound.",
+        "fun_fact": "Their first label ended their contract after saying 'Not even people in prison would like these songs!'",
+        "focus_sections": ["Stiff upper lip"],
+        "related_authors": []
+    },
+    
+    # Unit 7: Bildungsroman
+    "charles dickens": {
+        "name": "Charles Dickens",
+        "unit": "bildungsroman",
+        "nationality": "British",
+        "works": [
+            {"title": "Oliver Twist", "type": "Novel", "page": 129, "description": "Novel about an orphan's journey"}
+        ],
+        "key_themes": ["Social criticism", "Childhood", "Poverty", "Identity"],
+        "biography": "Charles Dickens was an English writer and social critic, regarded as the greatest novelist of the Victorian era.",
+        "fun_fact": "Many of his novels were first published in serialized form in magazines.",
+        "focus_sections": ["Oliver Twist", "The Bildungsroman"],
+        "related_authors": []
+    },
+    "j.k. rowling": {
+        "name": "J.K. Rowling",
+        "unit": "bildungsroman",
+        "nationality": "British",
+        "works": [
+            {"title": "Harry Potter and the Philosopher's Stone", "type": "Novel", "page": 129, "description": "Fantasy coming-of-age novel"}
+        ],
+        "key_themes": ["Coming of age", "Friendship", "Good vs evil", "Identity"],
+        "biography": "J.K. Rowling is a British author best known for the Harry Potter fantasy series.",
+        "fun_fact": "She was the first person to become a billionaire from writing books.",
+        "focus_sections": ["The Bildungsroman"],
+        "related_authors": []
+    },
+    "maya angelou": {
+        "name": "Maya Angelou",
+        "unit": "bildungsroman",
+        "nationality": "American",
+        "works": [
+            {"title": "Still I Rise", "type": "Poem", "page": 130, "description": "Empowering poem about resilience"}
+        ],
+        "key_themes": ["Resilience", "Identity", "Race", "Feminism"],
+        "biography": "Maya Angelou was an American poet, memoirist, and civil rights activist.",
+        "fun_fact": "She spoke six languages and worked as a streetcar conductor in San Francisco.",
+        "focus_sections": ["Learning from role models"],
+        "related_authors": []
+    },
+    
+    # Unit 10: Music
+    "bob dylan": {
+        "name": "Bob Dylan",
+        "unit": "music",
+        "nationality": "American",
+        "works": [
+            {"title": "The Times They Are A-Changing", "type": "Song", "page": 182, "description": "Protest song of the 1960s"}
+        ],
+        "key_themes": ["Protest", "Social change", "Poetry", "Counterculture"],
+        "biography": "Bob Dylan is an American singer-songwriter and Nobel Prize laureate in Literature.",
+        "fun_fact": "He won the Nobel Prize in Literature in 2016, the first musician to do so.",
+        "focus_sections": ["The Sixties"],
+        "related_authors": []
+    },
+    "nina simone": {
+        "name": "Nina Simone",
+        "unit": "music",
+        "nationality": "American",
+        "works": [
+            {"title": "To Be Young, Gifted and Black", "type": "Song", "page": 181, "description": "Anthem of Black pride"}
+        ],
+        "key_themes": ["Civil rights", "Black identity", "Empowerment"],
+        "biography": "Nina Simone was an American singer, songwriter, and civil rights activist.",
+        "fun_fact": "She was trained as a classical pianist and applied to the Curtis Institute, where she was rejected—she believed due to racism.",
+        "focus_sections": ["Notting Hill Carnival"],
+        "related_authors": []
+    },
+    "bruce springsteen": {
+        "name": "Bruce Springsteen",
+        "unit": "music",
+        "nationality": "American",
+        "works": [
+            {"title": "Born in the USA", "type": "Song", "page": 181, "description": "Often misunderstood patriotic song"}
+        ],
+        "key_themes": ["Working class", "America", "Patriotism", "Social criticism"],
+        "biography": "Bruce Springsteen is an American singer-songwriter known for his heartland rock sound and working-class themes.",
+        "fun_fact": "Born in the USA was often misinterpreted as a jingoistic anthem when it's actually critical of America's treatment of Vietnam veterans.",
+        "focus_sections": ["Born in the USA: misunderstood songs"],
+        "related_authors": []
+    },
+    
+    # Unit 11: Migration
+    "jacob lawrence": {
+        "name": "Jacob Lawrence",
+        "unit": "migration",
+        "nationality": "American",
+        "works": [
+            {"title": "The Migration Series", "type": "Painting", "page": 200, "description": "Series depicting the Great Migration"}
+        ],
+        "key_themes": ["Migration", "African American experience", "History", "Identity"],
+        "biography": "Jacob Lawrence was an American painter known for his portrayal of African American historical subjects.",
+        "fun_fact": "He was only 23 when he completed The Migration Series, which made him famous.",
+        "focus_sections": ["The Great Migration"],
+        "related_authors": []
+    },
+    "amy tan": {
+        "name": "Amy Tan",
+        "unit": "migration",
+        "nationality": "American",
+        "works": [
+            {"title": "The Joy Luck Club", "type": "Novel", "page": 203, "description": "Novel about Chinese-American mothers and daughters"}
+        ],
+        "key_themes": ["Immigration", "Mother-daughter relationships", "Identity", "Cultural conflict"],
+        "biography": "Amy Tan is an American writer whose work explores mother-daughter relationships and the Chinese-American experience.",
+        "fun_fact": "The Joy Luck Club was adapted into a film in 1993, with Tan co-writing the screenplay.",
+        "focus_sections": ["Melting pot and salad bowl"],
+        "related_authors": []
+    },
+    "zadie smith": {
+        "name": "Zadie Smith",
+        "unit": "migration",
+        "nationality": "British",
+        "works": [
+            {"title": "White Teeth", "type": "Novel", "page": 220, "description": "Novel about multicultural London"}
+        ],
+        "key_themes": ["Multiculturalism", "Identity", "Race", "London"],
+        "biography": "Zadie Smith is a British novelist and essayist known for her debut novel White Teeth.",
+        "fun_fact": "She wrote White Teeth while still a student at Cambridge University.",
+        "focus_sections": ["Integration or cohabitation"],
+        "related_authors": []
+    }
+}
+
+# LLCE Curriculum Units
 LLCE_UNITS = {
     "africa": {
         "title": "Africa: The Danger of a Single Story",
         "pages": "18-37",
         "theme": "Art et contestation",
-        "authors": ["Chimamanda Ngozi Adichie", "Joseph Conrad", "Chinua Achebe", "Ngugi Wa Thiong'o"],
-        "key_texts": [
-            {"title": "Heart of Darkness", "author": "Joseph Conrad", "page": 20, "type": "novel excerpt"},
-            {"title": "Things Fall Apart", "author": "Chinua Achebe", "page": 21, "type": "novel excerpt"},
-            {"title": "The danger of a single story", "author": "Chimamanda Ngozi Adichie", "page": 25, "type": "speech"},
-            {"title": "Decolonising the Mind", "author": "Ngugi Wa Thiong'o", "page": 27, "type": "essay"}
-        ],
-        "key_images": [
-            {"title": "Satirical drawing on colonialism", "page": 20},
-            {"title": "Andrew Gilbert installation", "page": 22},
-            {"title": "Afrochella Festival poster", "page": 26}
-        ],
-        "key_videos": [
-            {"title": "Lupita Nyong'o on Black Panther", "page": 22, "code": "201lce005"},
-            {"title": "Swan Lake meets Africa - Dada Masilo", "page": 27, "code": "201lce006"}
-        ],
+        "authors": ["Chimamanda Ngozi Adichie", "Joseph Conrad", "Chinua Achebe", "Ngugi Wa Thiong'o", "Dada Masilo"],
         "focus_sections": ["Afrofuturism", "Black Panther", "From colonialism to postcolonialism"],
         "grammar": {"page": 32, "topics": ["Le pluperfect simple", "Le superlatif de supériorité"]},
         "pronunciation": {"page": 33, "topics": ["Les deux consonnes l", "L'accentuation"]},
         "translation": {"page": 34},
-        "exam_practice": {"page": 35},
-        "projects": [
-            "Write preface of an African artist's biography",
-            "Create podcast on new African art trends"
-        ]
+        "exam_practice": {"page": 35}
     },
     "art": {
         "title": "Sparking Debates with Modern Art",
         "pages": "38-57",
         "theme": "L'art qui fait débat",
-        "authors": ["E.E. Cummings", "J.M.W. Turner", "Mae West", "Damien Hirst", "Keith Haring", "Marc Quinn"],
-        "key_texts": [
-            {"title": "the sky was can dy", "author": "E.E. Cummings", "page": 40, "type": "poem"},
-            {"title": "birds here,in ven ting air", "author": "E.E. Cummings", "page": 40, "type": "poem"},
-            {"title": "The Catcher in the Rye excerpt", "author": "J.D. Salinger", "page": 42, "type": "novel excerpt"},
-            {"title": "The Singular Boldness of Mae West", "author": "Rachel Wager-Smith", "page": 45, "type": "article"}
-        ],
-        "key_images": [
-            {"title": "The Fighting Temeraire", "artist": "J.M.W. Turner", "page": 38},
-            {"title": "Guggenheim Museum", "artist": "Frank Lloyd Wright", "page": 41},
-            {"title": "Myra", "artist": "Marcus Harvey", "page": 43},
-            {"title": "God Knows Why", "artist": "Damien Hirst", "page": 43},
-            {"title": "Self", "artist": "Marc Quinn", "page": 43},
-            {"title": "Andy Mouse 3", "artist": "Keith Haring", "page": 47}
-        ],
-        "key_videos": [
-            {"title": "The EY Exhibition: Late Turner", "page": 40, "code": "201lce012"},
-            {"title": "The Art of Complaining - Guerrilla Girls", "page": 45, "code": "201lce013"},
-            {"title": "Jeff Koon's Rabbit sculpture sale", "page": 46, "code": "201lce014"}
-        ],
+        "authors": ["E.E. Cummings", "J.M.W. Turner", "Mae West", "Damien Hirst", "Keith Haring", "Marc Quinn", "J.D. Salinger"],
         "focus_sections": ["Pop Art", "Modernist poetry", "Scandal in 50s America: The Catcher in the Rye"],
         "grammar": {"page": 52, "topics": ["Les verbes de perception", "La forme du verbe après un modal"]},
         "pronunciation": {"page": 53, "topics": ["La voyelle longue /a:/", "La ION rule"]},
         "translation": {"page": 54},
-        "exam_practice": {"page": "55-57"},
-        "projects": [
-            "Write opinion article on controversial art project",
-            "Debate about exhibiting controversial artist"
-        ]
+        "exam_practice": {"page": "55-57"}
+    },
+    "debate": {
+        "title": "Up for Debate!",
+        "pages": "58-77",
+        "theme": "L'art du débat",
+        "authors": ["William Shakespeare", "Alexander Hamilton", "Barack Obama", "Lin-Manuel Miranda", "Denzel Washington"],
+        "focus_sections": ["The O.J. Simpson case", "A great debater: Alexander Hamilton"],
+        "grammar": {"page": 72, "topics": ["L'expression de l'opposition", "Le subjonctif"]},
+        "pronunciation": {"page": 73, "topics": ["Les diphtongues /əʊ/ et /aʊ/", "L'accentuation des mots en -ic(s)"]},
+        "translation": {"page": 74},
+        "exam_practice": {"page": 75}
+    },
+    "censorship": {
+        "title": "Censorship, an American Art?",
+        "pages": "78-85",
+        "theme": "Censorship",
+        "authors": ["Arthur Miller"],
+        "focus_sections": ["The Hays Code", "Banned Books Week"],
+        "grand_oral": {"page": 84}
+    },
+    "emotions": {
+        "title": "I Feel, Therefore I Am",
+        "pages": "88-107",
+        "theme": "Expression des émotions",
+        "authors": ["Jane Austen", "Emily Brontë", "Max Porter", "The Cure"],
+        "focus_sections": ["Romanticism", "Stiff upper lip"],
+        "grammar": {"page": 102, "topics": ["La phrase exclamative", "While, during et for"]},
+        "pronunciation": {"page": 103, "topics": ["Les voyelles /i/ et /i:/", "Prononciation des mots en -ate"]},
+        "translation": {"page": 104},
+        "exam_practice": {"page": 105}
+    },
+    "portraits": {
+        "title": "Portraits of Fiction",
+        "pages": "108-127",
+        "theme": "Mise en scène de soi",
+        "authors": ["George Orwell", "Vivian Maier", "Eminem"],
+        "focus_sections": ["Breaking the fourth wall", "Cameos", "Mise en abyme"],
+        "grammar": {"page": 122, "topics": ["Tags et reprises elliptiques", "By et le gérondif"]},
+        "pronunciation": {"page": 123, "topics": ["La voyelle longue /ɔ:/", "La prononciation des auxiliaires"]},
+        "translation": {"page": 124},
+        "exam_practice": {"page": 125}
+    },
+    "bildungsroman": {
+        "title": "You Live, You Learn",
+        "pages": "128-147",
+        "theme": "Initiation, apprentissage",
+        "authors": ["Charles Dickens", "J.K. Rowling", "Maya Angelou"],
+        "focus_sections": ["Oliver Twist", "The Bildungsroman"],
+        "grammar": {"page": 142, "topics": ["Les adjectifs composés", "For et since"]},
+        "pronunciation": {"page": 143, "topics": ["La voyelle brève /ʌ/", "L'accentuation des mots composés"]},
+        "translation": {"page": 144},
+        "exam_practice": {"page": 145}
+    },
+    "lgbtq": {
+        "title": "Gay Identity in the 1980s",
+        "pages": "148-155",
+        "theme": "LGBTQ+ history",
+        "authors": ["Armistead Maupin", "Tony Kushner", "Thom Gunn"],
+        "focus_sections": ["AIDS crisis", "ACT UP"],
+        "grand_oral": {"page": 154}
+    },
+    "exploration": {
+        "title": "Mankind, a Species Designed for Exploration?",
+        "pages": "158-177",
+        "theme": "Exploration et aventure",
+        "authors": ["Rudyard Kipling", "Arthur C. Clarke"],
+        "focus_sections": ["The age of exploration", "Science fiction", "Space race"],
+        "grammar": {"page": 172, "topics": ["Les inversions sujet-auxiliaire", "Les structures corrélatives"]},
+        "pronunciation": {"page": 173, "topics": ["La voyelle /ʌ/ et la réduction vocalique"]},
+        "translation": {"page": 174},
+        "exam_practice": {"page": 175}
+    },
+    "music": {
+        "title": "The Power of Music",
+        "pages": "178-197",
+        "theme": "Music and identity",
+        "authors": ["Bob Dylan", "Nina Simone", "Bruce Springsteen", "Woody Guthrie", "James Brown", "Midnight Oil"],
+        "focus_sections": ["The Sixties", "Notting Hill Carnival", "Relocation of Japanese Americans during WWII"],
+        "grammar": {"page": 192, "topics": ["La place des prépositions dans les relatives", "Les structures causatives"]},
+        "pronunciation": {"page": 193, "topics": ["La voyelle brève /ʊ/", "L'intonation"]},
+        "translation": {"page": 194},
+        "exam_practice": {"page": 195}
+    },
+    "migration": {
+        "title": "Migration: Journeys to a New Life",
+        "pages": "198-217",
+        "theme": "Migration et exil",
+        "authors": ["Jacob Lawrence", "Amy Tan", "Zadie Smith", "Natalie Diaz"],
+        "focus_sections": ["Famous immigrant success stories", "Melting pot and salad bowl", "The Great Migration"],
+        "grammar": {"page": 212, "topics": ["As et like", "Which et what"]},
+        "pronunciation": {"page": 213, "topics": ["La consonne /j/", "Les suffixes accentués"]},
+        "translation": {"page": 214},
+        "exam_practice": {"page": 215}
+    },
+    "food": {
+        "title": "A Taste for Adventure",
+        "pages": "218-225",
+        "theme": "Food and culture",
+        "authors": ["Jonathan Swift", "Richard Blanco", "Zadie Smith"],
+        "focus_sections": ["Food and identity"],
+        "grand_oral": {"page": 226}
     }
-    # Add other units as needed
 }
 
 # Exam structure constants
@@ -106,510 +585,4 @@ EXAM_STRUCTURE = {
         "coef": 10,
         "skills": ["Public speaking", "Argumentation", "Critical thinking", "Motivation"]
     },
-    "level": "B2/C1 CEFR"
-}
-
-# ============ FIXED: DETECT LLCE UNIT FUNCTION ============
-def detect_llce_unit(user_lower):
-    """Detect which LLCE unit the question relates to with enhanced keyword matching."""
-    
-    # Print debug info
-    print(f"DEBUG - Detecting unit for: '{user_lower}'")
-    
-    unit_keywords = {
-        "africa": [
-            "africa", "african", "adichie", "conrad", "achebe", "things fall apart", 
-            "heart of darkness", "postcolonial", "post-colonial", "single story", 
-            "afrofuturism", "black panther", "lupita", "ngugi", "decolonising",
-            "colonial", "colonisation", "nigeria", "afrochella", "diaspora"
-        ],
-        "art": [
-            "art", "modern art", "cummings", "e.e. cummings", "ee cummings", "e e cummings",
-            "poem", "poetry", "poet", "turner", "fighting temeraire", "guggenheim", 
-            "mae west", "hirst", "damien hirst", "haring", "keith haring", "quinn", 
-            "marc quinn", "catcher in the rye", "salinger", "warhol", "pop art", 
-            "modernist", "modernism", "controversial", "scandal", "guerrilla girls", 
-            "jeff koons", "rabbit sculpture", "amy winehouse", "hologram", "sky was candy",
-            "birds here", "inventing air"
-        ],
-        "debate": [
-            "debate", "debating", "rhetoric", "courtroom", "12 angry men", "twelve angry men",
-            "hamilton", "alexander hamilton", "obama", "barack obama", "political", "argument",
-            "win an argument", "free speech", "oratory", "rhetorical", "persuasion",
-            "richard iii", "shakespeare", "johnnie cochran", "oj simpson", "cabinet battle"
-        ],
-        "censorship": [
-            "censorship", "censor", "banned", "banning books", "hays code", "motion picture code",
-            "trigger warning", "free speech", "first amendment", "banned books week",
-            "arthur miller", "aviator", "martin scorsese", "freedom of speech", "museum of censored art"
-        ],
-        "emotions": [
-            "emotion", "emotions", "austen", "jane austen", "sense and sensibility", "brontë", "bronte",
-            "emily brontë", "wuthering heights", "porter", "max porter", "grief", "stiff upper lip",
-            "romanticism", "feel", "feeling", "boys don't cry", "the cure", "sigourney weaver",
-            "alien", "wonder woman", "fleabag", "young widow", "meeting place"
-        ],
-        "portraits": [
-            "portrait", "portraits", "fiction", "orwell", "george orwell", "maier", "vivian maier",
-            "metafiction", "self-representation", "self portrait", "fourth wall", "stranger than fiction",
-            "purple rose of cairo", "woody allen", "eminem", "stan", "j.k. rowling", "selfie"
-        ],
-        "bildungsroman": [
-            "bildungsroman", "coming of age", "grow", "growing up", "learning", "initiation",
-            "oliver twist", "dickens", "harry potter", "rowling", "angelou", "maya angelou",
-            "dead poets society", "boyhood", "calvin and hobbes", "barn owl", "role models",
-            "still i rise", "michelle obama"
-        ],
-        "lgbtq": [
-            "gay", "lgbtq", "lgbt", "aids", "1980s", "eighties", "maupin", "armistead maupin",
-            "kushner", "tony kushner", "angels in america", "castro", "san francisco", "act up",
-            "keith haring", "thom gunn", "missing poem", "aids crisis"
-        ],
-        "exploration": [
-            "exploration", "explore", "adventure", "space", "science fiction", "sci-fi", "travel",
-            "journey", "expedition", "alice in wonderland", "peter pan", "swallows and amazons",
-            "kipling", "uncharted", "mary kingsley", "astronaut", "space oddity", "david bowie",
-            "arrival", "final frontier", "space tourism"
-        ],
-        "music": [
-            "music", "song", "protest song", "festival", "heritage", "identity", "madonna",
-            "david bowie", "midnight oil", "bells are burning", "woody guthrie", "this land is your land",
-            "nina simone", "james brown", "bruce springsteen", "born in the usa", "star-spangled banner",
-            "god save the queen", "bob dylan", "notting hill carnival", "pianos for peace"
-        ],
-        "migration": [
-            "migration", "immigration", "immigrant", "diaspora", "journey", "integration", "exile",
-            "jacob lawrence", "ellis island", "the corrs", "natalie diaz", "joy luck club",
-            "amy tan", "hamilton mixtape", "barack obama", "great migration", "melting pot",
-            "salad bowl", "aero mexico"
-        ],
-        "food": [
-            "food", "taste", "cuisine", "culinary", "cooking", "eat", "shackleton", "endurance",
-            "west african cuisine", "martin parr", "richard blanco", "zadie smith", "white teeth",
-            "lion film", "gulliver's travels", "jonathan swift", "street food"
-        ]
-    }
-    
-    # First, try exact matches for specific authors/works
-    for unit, keywords in unit_keywords.items():
-        for keyword in keywords:
-            if keyword in user_lower:
-                print(f"DEBUG - Matched unit '{unit}' with keyword '{keyword}'")
-                return unit
-    
-    # If no match found, return None (will trigger general response)
-    print("DEBUG - No unit matched")
-    return None
-
-# ============ FIXED: DETECT EXAM COMPONENT FUNCTION ============
-def detect_exam_component(user_lower):
-    """Detect which exam component the question relates to."""
-    if any(word in user_lower for word in ['synthesis', 'written', '500 words', 'essay', 'synthèse', 'écrit']):
-        return "written_exam"
-    elif any(word in user_lower for word in ['oral', 'portfolio', 'presentation', 'q&a', 'dossier']):
-        return "oral_exam"
-    elif any(word in user_lower for word in ['grand oral', 'orientation', 'project', 'projet']):
-        return "grand_oral"
-    elif any(word in user_lower for word in ['translation', 'translate', '600 characters', 'traduction']):
-        return "translation"
-    return "general_preparation"
-
-def extract_topic(user_message: str, unit_data: Optional[Dict]) -> Optional[str]:
-    """Extract specific topic from user message (poem title, author, concept)"""
-    user_lower = user_message.lower()
-    
-    # Check for specific Cummings poems
-    if "sky was candy" in user_lower or "sky was can dy" in user_lower:
-        return "the sky was can dy"
-    if "birds here" in user_lower or "inventing air" in user_lower:
-        return "birds here,in ven ting air"
-    
-    # Check for poem titles in quotes
-    poem_patterns = [
-        r'"([^"]+)"',  # Double quotes
-        r"'([^']+)'",   # Single quotes
-        r'poem.*?by\s+([A-Za-z\.\s]+)',  # "poem by Author"
-        r'([A-Za-z\.\s]+).*?poem'  # "Author poem"
-    ]
-    
-    for pattern in poem_patterns:
-        match = re.search(pattern, user_message, re.IGNORECASE)
-        if match:
-            return match.group(1).strip()
-    
-    # Check for author names in unit data
-    if unit_data and 'authors' in unit_data:
-        for author in unit_data['authors']:
-            if author.lower() in user_lower:
-                return author
-    
-    return None
-
-def generate_follow_ups(unit_key: Optional[str], topic: Optional[str], user_lower: str) -> List[str]:
-    """Generate intelligent follow-up suggestions"""
-    follow_ups = []
-    
-    if unit_key == "art" and "cummings" in user_lower:
-        follow_ups = [
-            "Analyze the second Cummings poem: 'birds here,in ven ting air'",
-            "Compare Cummings with another modernist poet from the unit",
-            "Connect Cummings' style to the 'Modernist poetry' focus section on page 48",
-            "Practice writing a BAC synthesis paragraph using Cummings as an example"
-        ]
-    elif unit_key == "africa":
-        follow_ups = [
-            "Compare Conrad's and Achebe's representations of Africa",
-            "Explore the 'Afrofuturism' focus section on page 28",
-            "Prepare an oral presentation on 'The danger of a single story'"
-        ]
-    elif unit_key == "emotions":
-        follow_ups = [
-            "Analyze the 'Stiff Upper Lip' concept in British culture",
-            "Compare Austen's and Brontë's treatment of emotion",
-            "Connect to the 'Romanticism' focus section on page 98"
-        ]
-    else:
-        unit_title = LLCE_UNITS.get(unit_key, {}).get('title', 'this unit') if unit_key else 'the LLCE curriculum'
-        follow_ups = [
-            f"Explore other documents in {unit_title}",
-            "Practice with the grammar exercises on the unit's grammar page",
-            "Build your oral portfolio with documents from this unit"
-        ]
-    
-    return follow_ups
-
-def generate_llce_deep_dive(user_message: str, user_lower: str, unit_key: Optional[str], 
-                            unit_data: Optional[Dict], topic: Optional[str]) -> str:
-    """Generate LLCE-specific deep dive responses following the 5-phase framework."""
-    
-    # Override for Cummings if needed (backup in case detection fails)
-    if 'cummings' in user_lower and unit_key != 'art':
-        unit_key = 'art'
-        unit_data = LLCE_UNITS.get('art')
-        topic = 'cummings'
-    
-    # UNIT-SPECIFIC DEEP DIVE RESPONSES
-    
-    # E.E. CUMMINGS DEEP DIVE (from page 40)
-    if unit_key == "art" and any(term in user_lower for term in ['cummings', 'poem', 'sky', 'birds', 'candy', 'e.e.']):
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_data['title']} (pages {unit_data['pages']})
-- **Theme:** {unit_data.get('theme')}
-- **Specific Document:** E.E. Cummings poems on **page 40**
-- **Focus Section:** "Modernist poetry" on **page 48** and E.E. Cummings biography on **page 48**
-
-2. 🎯 PRESENT THE CORE MATERIALS
-Your textbook provides these resources on E.E. Cummings:
-
-**Primary Texts (page 40):**
-- Poem 1: "the sky was can dy" - a concrete poem about a sunset/sky
-- Poem 2: "birds here,in ven ting air" - about birds and creation/invention
-
-**Textbook Questions (page 40):**
-1. "Present in one sentence the subject of the two poems."
-2. "Read Let's focus on... Modernist poetry, p. 48. Identify what makes these poems modern and draw a parallel with modernist poetry."
-3. "Explain how this original form gives access to the meaning of the poems."
-4. "During a lecture in Harvard, E.E. Cummings told the students: 'If poetry is your goal, you've got to forget all about punishments and all about rewards.' Write down three questions you could ask him about his statement."
-
-**Visual Support:** The poems themselves are visual arrangements on the page
-
-**Additional Resources:**
-- Modernist poetry focus section (page 48)
-- E.E. Cummings biography (page 48)
-- Pronunciation exercises (page 53)
-- Translation page (page 54)
-
-3. 🔍 GUIDED ANALYSIS USING TEXTBOOK QUESTIONS
-
-**Question 1: "Present in one sentence the subject of the two poems."**
-
-*Methodology:* Look at the key words and visual arrangement to identify theme.
-
-- **Poem 1 ("the sky was can dy"):** The fragmented words ("can dy" for candy, "lu mi nous" for luminous, "spry pinks," "shy lem ons," "choco lates") suggest a sunset or sky painted in vibrant colors—the speaker is breaking down a visual experience into its component parts, just as the poem breaks words into syllables.
-
-- **Poem 2 ("birds here,in ven ting air"):** The words "inven ting" (inventing), "U" (you), "Ising" (I sing/Icing?), "Tw iligh t's" (twilight's), and "vas" (vast) suggest birds in flight creating/marking the air, possibly at twilight. The wordplay with "I sing" suggests the poet identifying with the birds' creative act.
-
-*Sample B2/C1 response:* "The first poem captures the fragmented perception of a colorful sunset through broken syntax, while the second poem depicts birds as creators who 'invent' the air through flight and song, metaphorically representing the poet's own creative process."
-
-**Question 2: "Identify what makes these poems modern and draw a parallel with modernist poetry."**
-
-*Methodology:* First, read the "Modernist poetry" section on page 48. Extract key characteristics, then apply them to Cummings.
-
-*Key characteristics from page 48:*
-- "Modernist poets tended to favour intellect over emotion"
-- "A more accessible, common speech language over the flowery style"
-- "The lyrics are often shorter, sharper"
-- "Freedom of form and content is at the heart of modern poetry"
-- "The syntax is not always rigorous"
-
-*Applying to Cummings:*
-- **Intellect over emotion:** Cummings forces readers to *think* about how language creates meaning—the visual fragmentation makes us analyze, not just feel.
-- **Common speech:** He uses simple words ("sky," "sweet," "birds") but arranges them unconventionally.
-- **Shorter, sharper:** The poems are brief; each fragment delivers impact.
-- **Freedom of form:** The words spill across the page unconventionally—this is radical formal freedom.
-- **Non-rigorous syntax:** Traditional grammar is abandoned; meaning emerges from spatial arrangement.
-
-*Sample analysis:* "Cummings exemplifies modernist poetry's revolt against convention. Like his contemporaries, he replaces traditional meter and rhyme with visual experimentation, forcing readers to construct meaning actively rather than passively receive it. His simple vocabulary democratizes poetry while his complex arrangements intellectualize the reading experience."
-
-**Question 3: "Explain how this original form gives access to the meaning of the poems."**
-
-*Methodology:* Look at specific formal choices and connect them to meaning.
-
-*For "the sky was can dy":*
-- Words split across lines mimic how we actually perceive a sunset—not as a unified whole, but as separate sensations (colors, light, sweetness)
-- "can dy" (candy) suggests the sweetness/pleasure of the visual experience
-- The isolation of "lu" and "mi" in "lu mi nous" forces slow reading, mimicking the gradual emergence of light
-- The vertical arrangement mirrors looking up at the sky
-
-*For "birds here,in ven ting air":*
-- "in ven ting" split suggests the active, ongoing process of creation
-- "U" (you) isolated invites reader participation
-- "Ising" plays on "I sing" and "icing"—both artistic creation and a surface being covered/transformed
-- The scattered words mimic birds scattered across the sky
-
-*Sample analysis:* "Cummings' form is not decorative but functional—it enacts the very experience it describes. The fragmented words in the first poem recreate the way light and color disperse across the evening sky, each isolated syllable demanding attention like an individual hue. Similarly, the scattered words of the second poem visualize birds in flight, their positions on the page creating a kind of word-skyscape. The reader must actively piece together meaning, just as one pieces together a visual scene."
-
-**Question 4: "Write down three questions you could ask him about his statement."**
-
-*Statement:* "If poetry is your goal, you've got to forget all about punishments and all about rewards."
-
-*Sample B2/C1 questions:*
-1. "When you say 'forget punishments and rewards,' are you asking poets to ignore public reception entirely, or simply to prioritize artistic vision over it?"
-
-2. "Your poems were initially rejected by publishers who found them incomprehensible—did you ever doubt your experimental approach when facing these 'punishments'?"
-
-3. "If a poet creates work that no one can understand, does the poetry still achieve its 'goal,' or does communication with an audience matter?"
-
-4. ✨ BAC APPLICATION BRIDGE
-
-**Written Synthesis Application:**
-Cummings would be an excellent example in a synthesis on "L'art qui fait débat" (Art that sparks debate). You could argue that Cummings provoked controversy not through shocking content but through revolutionary form—challenging what poetry *is*.
-
-*Sample synthesis paragraph:*
-"E.E. Cummings exemplifies how formal innovation can itself constitute artistic protest. His poems on page 40, with their fragmented words and unconventional layouts, sparked debate not about subject matter but about the very definition of poetry. By forcing readers to question whether text arranged visually on a page constitutes 'verse,' Cummings anticipated later debates about conceptual art and the boundaries of artistic media."
-
-**Oral Portfolio Integration:**
-For your oral presentation (10 minutes + 10 min Q&A), you could create a dossier including:
-1. One Cummings poem from page 40
-2. The "Modernist poetry" focus section from page 48
-3. A second controversial artwork from this unit (e.g., Hirst's "God Knows Why" on page 43)
-4. An article about artistic controversy (e.g., the Jeff Koons article referenced on page 46)
-
-*Possible presentation structure:*
-- Introduction: What makes art "controversial"? (2 min)
-- Document 1: Cummings' formal revolution (3 min)
-- Document 2: Hirst's material provocation (3 min)
-- Synthesis: Different ways art challenges conventions (2 min)
-
-**Grand Oral Connection:**
-Possible question: "How do artists use formal experimentation to challenge social and artistic conventions?"
-
-*This could connect to orientation projects in:*
-- Art history/criticism
-- Creative writing
-- Cultural journalism
-- Museum studies
-
-**Translation Practice (relevant to written exam):**
-Translate Cummings presents unique challenges. How would you render "the sky was can dy" in French while preserving the visual fragmentation? Possible approaches:
-- Keep English words but explain in commentary
-- Create equivalent French word splits ("le ciel était bon bon")
-- Focus on meaning in translation, discuss form in analysis
-
-5. 🚀 INTERACTIVE NEXT STEPS
-
-Would you like to:
-1. **Analyze the second Cummings poem** ("birds here,in ven ting air") in similar depth?
-2. **Compare Cummings with another modernist poet** mentioned in the focus section?
-3. **Explore how other artists in this unit** (Turner, Hirst, Haring) sparked different kinds of debates?
-4. **Practice writing a BAC synthesis paragraph** using Cummings as your main example?
-5. **Build an oral portfolio entry** around experimental poetry?
-
-Just let me know which pathway interests you!"""
-
-    # AFRICA UNIT DEEP DIVE
-    elif unit_key == "africa":
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_data['title']} (pages {unit_data['pages']})
-- **Theme:** {unit_data.get('theme')}
-- **Key Authors:** {', '.join(unit_data.get('authors', []))}
-- **Focus Sections:** {', '.join(unit_data.get('focus_sections', []))}
-
-2. 🎯 PRESENT THE CORE MATERIALS
-Your textbook provides these key documents:
-
-**Literary Texts:**
-- Joseph Conrad, "Heart of Darkness" excerpt (page 20)
-- Chinua Achebe, "Things Fall Apart" excerpt (page 21)
-- Mike Phillips, "Visions of Africa" essay (page 23)
-- Noo Saro-Wiwa, "Looking for Transwonderland" excerpt (page 34 - translation exercise)
-- Ngugi Wa Thiong'o, "Decolonising the Mind" excerpt (page 27)
-
-**Visual Documents:**
-- Satirical drawing on colonialism (page 20)
-- Andrew Gilbert installation (page 22)
-- Afrochella Festival poster (page 26)
-- Hank Willis Thomas, "Raise up" (page 29)
-
-**Video/Audio Resources:**
-- Lupita Nyong'o on Black Panther (page 22, code: 201lce005)
-- Dada Masilo interview: Swan Lake meets Africa (page 27, code: 201lce006)
-- Chimamanda Ngozi Adichie on "The danger of a single story" (referenced page 25)
-
-**Focus Sections (pages 28-29):**
-- Afrofuturism
-- Black Panther
-- From colonialism to postcolonialism
-- Author biographies
-
-**Language Resources:**
-- Grammar: Pluperfect simple, Superlatives (page 32)
-- Pronunciation: The two l consonants, Word stress (page 33)
-- Translation practice (page 34)
-- Exam practice: Synthesis (page 35)
-
-3. 🔍 GUIDED ANALYSIS - KEY QUESTIONS FROM YOUR TEXTBOOK
-
-**From page 20 (Conrad extract):**
-*Question 4: "Imagine the description of the white narrator by the African fireman."*
-
-*Methodology:* This exercise asks you to reverse the colonial gaze—to imagine how Africans perceived Europeans.
-
-*Key elements to consider:*
-- The fireman sees the narrator as strange, possibly threatening
-- The narrator's incomprehensible technology (steam gauges, pipes)
-- The power dynamic—the narrator is in charge but seems dependent on the fireman's labor
-- The condescending way the narrator describes the fireman would surely be reciprocated
-
-*Sample response:* "The pale man watches me tend the boiler with suspicious eyes. He thinks I don't understand this machine, but I know when the water runs low. He calls me 'savage' yet relies on my hands to keep the boat moving. His skin looks sickly, like someone who never sees sun. When he speaks to the other pale men, they laugh and point at me. I wonder what god they worship that makes them so cold."
-
-**From page 23 (Mike Phillips essay):**
-*Question 5: "Write a short article for an art magazine to present the exhibition and its goals."*
-
-*Structure for your article:*
-1. **Introduction:** Present the Tate exhibition "Seeing Africa" and its premise
-2. **The problem:** How 19th-century colonialism shaped European visions of Africa
-3. **The exhibition's purpose:** To uncover and challenge these inherited perspectives
-4. **Key works:** Mention specific artists and their approaches
-5. **Conclusion:** Why this matters today—how we can learn to see differently
-
-*Key vocabulary to include:*
-- "Biological determinism," "repressed sexuality," "romanticised vision"
-- "Colonising gaze," "psychological confrontation"
-- "Traumas and complexities of race"
-
-**From page 26 (Afrochella poster):**
-*Question 3: "Afrochella's 'purposes are to tell the New Africa story from a native's perspective.' Comment on this statement."*
-
-*Analysis points:*
-- Contrast with Conrad's external perspective (page 20)
-- Connection to Adichie's "single story" concept (page 25)
-- The importance of who tells the story
-- "New Africa" implies rejecting old stereotypes
-- "Native's perspective" emphasizes authenticity and self-representation
-
-4. ✨ BAC APPLICATION BRIDGE
-
-**Written Synthesis Topic (from page 35):**
-"Write a commentary on the three documents. Use the following guidelines:
-a. Explain how art helps link the past, present and future.
-b. Analyse how modern art illustrates Africa's development.
-c. Show how art is a powerful tool to create a new Africa."
-
-*Sample thesis:* "Through the juxtaposition of colonial and postcolonial works, contemporary African art demonstrates that reclaiming narrative control is essential to linking Africa's traumatic past with its innovative future."
-
-**Oral Portfolio Structure:**
-Your dossier could include:
-1. Achebe's "Things Fall Apart" excerpt (page 21) - the literary response to Conrad
-2. Afrochella poster (page 26) - contemporary cultural celebration
-3. Dada Masilo video (page 27) - artistic innovation blending traditions
-4. Your personal reflection on representation
-
-**Grand Oral Question Possibility:**
-"Can art heal historical trauma and reshape cultural identity?"
-
-5. 🚀 INTERACTIVE NEXT STEPS
-
-Choose your focus:
-1. Compare Conrad and Achebe's representations of Africa
-2. Explore Afrofuturism through the Black Panther focus section
-3. Analyze the Dada Masilo video and her fusion of traditions
-4. Prepare for the written synthesis on page 35
-5. Build your oral portfolio with documents from this unit"""
-
-    # EMOTIONS UNIT DEEP DIVE
-    elif unit_key == "emotions":
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_data['title']} (pages {unit_data['pages']})
-- **Theme:** {unit_data.get('theme')}
-- **Key Authors:** {', '.join(unit_data.get('authors', []))}
-- **Focus Sections:** {', '.join(unit_data.get('focus_sections', []))}
-
-2. 🎯 PRESENT THE CORE MATERIALS
-
-**Literary Texts:**
-- Jane Austen, "Sense and Sensibility" excerpt (page 90)
-- Max Porter, "Grief is the Thing with Feathers" excerpt (page 94)
-- Emily Brontë, "Wuthering Heights" excerpt (page 96)
-- Boys Don't Cry song lyrics (page 93)
-
-**Visual Documents:**
-- Frederick William Burton, "Hellel and Hildebrand" (page 91)
-- Wonder Woman comic (page 92)
-- Edward Killingworth Johnson, "The Young Widow" (page 95)
-- Paul Day, "The Meeting Place" statue (page 97)
-
-**Video/Audio Resources:**
-- Stiff Upper Lip video (page 91, code: 201lce031)
-- Sigourney Weaver interview (page 93, code: 201lce033)
-- The Descendants clip (page 94, code: 201lce034)
-- Fleabag wedding speech (page 97, code: 201lce035)
-
-**Focus Sections (pages 98-99):**
-- Romanticism
-- Stiff upper lip
-- Author biographies
-
-**Language Resources:**
-- Grammar: Exclamative sentences, While/during/for (page 102)
-- Pronunciation: /i/ and /i:/ vowels, -ate words (page 103)
-- Translation practice (page 104)
-- Exam practice (page 105)
-
-3. 🔍 GUIDED ANALYSIS
-
-**Key Question from page 90 (Austen extract):**
-*Question 3: "Explain how the title of the book reflects the characters' personalities."*
-
-*Analysis:*
-- **Sense (Elinor):** Reason, restraint, social awareness, hiding feelings
-- **Sensibility (Marianne):** Emotion, spontaneity, public feeling, vulnerability
-- The novel explores the tension between these approaches and suggests a balance is needed
-
-**Key Question from page 96 (Brontë extract):**
-*Question 4: "Explain in your own words the definition of love Catherine gives."*
-
-*Catherine's definition:*
-"I am Heathcliff — he's always, always in my mind — not as a pleasure, any more than I am always a pleasure to myself — but as my own being."
-
-*Analysis:* Love here is not about pleasure or happiness—it's about identity itself. Catherine doesn't love Heathcliff as a separate person; he IS her. This explains why marrying Edgar feels like self-betrayal.
-
-4. ✨ BAC APPLICATION BRIDGE
-
-**Possible Synthesis Topic:**
-"How do British texts represent the conflict between emotional expression and social restraint?"
-
-**Oral Portfolio Idea:**
-Compare Austen's representation of restrained emotion (Elinor) with Porter's contemporary grief narrative—how has the "stiff upper lip" evolved?
-
-5. 🚀 INTERACTIVE NEXT STEPS
-
-1. Analyze the "Stiff Upper Lip" concept in British culture
-2. Compare Austen and Brontë's treatment of emotion
-3. Explore the Romanticism focus section
-4. Practice translation with the page 104 exercise"""
-
-    # GENERAL LLCE DEEP DIVE TEMPLATE
-    else:
-        unit_info = unit_data['title'] if unit_data else "General LLCE curriculum"
-        unit_pages = unit_data
+    "
