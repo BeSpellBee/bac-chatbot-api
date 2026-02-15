@@ -18,8 +18,6 @@ else:
     print("Using fallback mode - no Gemini API key configured")
 
 # ============ COMPREHENSIVE AUTHOR DATABASE ============
-# This contains every author from the syllabus with their details
-
 AUTHORS_DATABASE = {
     # Unit 1: Africa
     "chimamanda ngozi adichie": {
@@ -27,12 +25,12 @@ AUTHORS_DATABASE = {
         "unit": "africa",
         "nationality": "Nigerian",
         "works": [
-            {"title": "The Danger of a Single Story", "type": "TED Talk", "page": 25, "description": "Speech about the dangers of monolithic narratives"},
-            {"title": "Purple Hibiscus", "type": "Novel", "page": 31, "description": "Coming-of-age story set in Nigeria"},
-            {"title": "Half of a Yellow Sun", "type": "Novel", "page": 31, "description": "Novel about the Nigerian Civil War"}
+            {"title": "The Danger of a Single Story", "type": "TED Talk", "page": 25},
+            {"title": "Purple Hibiscus", "type": "Novel", "page": 31},
+            {"title": "Half of a Yellow Sun", "type": "Novel", "page": 31}
         ],
         "key_themes": ["Postcolonialism", "Feminism", "Identity", "Representation", "The danger of single stories"],
-        "biography": "Chimamanda Ngozi Adichie is a Nigerian writer whose work explores feminism, postcolonialism, and identity. She was born in Enugu, Nigeria in 1977.",
+        "biography": "Chimamanda Ngozi Adichie is a Nigerian writer whose work explores feminism, postcolonialism, and identity.",
         "fun_fact": "Her 2009 TED Talk 'The Danger of a Single Story' is one of the most-viewed TED Talks of all time.",
         "focus_sections": ["Postcolonialism", "African literature"],
         "related_authors": ["Chinua Achebe", "Ngugi Wa Thiong'o"]
@@ -42,9 +40,9 @@ AUTHORS_DATABASE = {
         "unit": "africa",
         "nationality": "Nigerian",
         "works": [
-            {"title": "Things Fall Apart", "type": "Novel", "page": 21, "description": "Seminal novel about pre-colonial Nigeria and the arrival of Europeans"},
-            {"title": "No Longer at Ease", "type": "Novel", "page": 29, "description": "Sequel to Things Fall Apart"},
-            {"title": "Arrow of God", "type": "Novel", "page": 29, "description": "Third novel in the trilogy"}
+            {"title": "Things Fall Apart", "type": "Novel", "page": 21},
+            {"title": "No Longer at Ease", "type": "Novel", "page": 29},
+            {"title": "Arrow of God", "type": "Novel", "page": 29}
         ],
         "key_themes": ["Colonialism", "Igbo culture", "Tradition vs change", "Masculinity"],
         "biography": "Chinua Achebe was a Nigerian novelist and critic, widely considered the father of modern African literature.",
@@ -57,10 +55,10 @@ AUTHORS_DATABASE = {
         "unit": "africa",
         "nationality": "Polish-British",
         "works": [
-            {"title": "Heart of Darkness", "type": "Novel", "page": 20, "description": "Novella about a voyage up the Congo River"}
+            {"title": "Heart of Darkness", "type": "Novel", "page": 20}
         ],
         "key_themes": ["Colonialism", "Imperialism", "Darkness", "Civilization vs savagery"],
-        "biography": "Joseph Conrad was a Polish-British writer regarded as one of the greatest novelists in English. His experience as a mariner informed much of his work.",
+        "biography": "Joseph Conrad was a Polish-British writer regarded as one of the greatest novelists in English.",
         "fun_fact": "The spaceship in the Ridley Scott film Alien is named Nostromo after Conrad's 1904 novel.",
         "focus_sections": ["Colonialism"],
         "related_authors": ["Chinua Achebe"]
@@ -70,10 +68,10 @@ AUTHORS_DATABASE = {
         "unit": "africa",
         "nationality": "Kenyan",
         "works": [
-            {"title": "Decolonising the Mind", "type": "Essay", "page": 27, "description": "Essay on language and African literature"}
+            {"title": "Decolonising the Mind", "type": "Essay", "page": 27}
         ],
         "key_themes": ["Decolonization", "Language", "African identity", "Postcolonial theory"],
-        "biography": "Ngũgĩ wa Thiong'o is a Kenyan writer and academic who writes primarily in Gikuyu and English. He advocates for African literature in African languages.",
+        "biography": "Ngũgĩ wa Thiong'o is a Kenyan writer and academic who writes primarily in Gikuyu and English.",
         "fun_fact": "He was imprisoned in Kenya for his controversial play 'Ngaahika Ndeenda' and later went into exile.",
         "focus_sections": ["Decolonising the mind"],
         "related_authors": ["Chinua Achebe"]
@@ -83,11 +81,11 @@ AUTHORS_DATABASE = {
         "unit": "africa",
         "nationality": "South African",
         "works": [
-            {"title": "Swan Lake", "type": "Ballet", "page": 27, "description": "Reimagining of Swan Lake with African dance"},
-            {"title": "Romeo and Juliet", "type": "Ballet", "page": 29, "description": "Multiracial adaptation of Shakespeare"}
+            {"title": "Swan Lake", "type": "Ballet", "page": 27},
+            {"title": "Romeo and Juliet", "type": "Ballet", "page": 29}
         ],
         "key_themes": ["Fusion", "Identity", "Tradition and modernity", "Challenging stereotypes"],
-        "biography": "Dada Masilo is a South African dancer and choreographer known for reinterpreting classical ballets with African dance and contemporary themes.",
+        "biography": "Dada Masilo is a South African dancer and choreographer known for reinterpreting classical ballets with African dance.",
         "fun_fact": "In her gay interpretation of Swan Lake, the male dancer performing Odile is the only one to perform en pointe.",
         "focus_sections": ["Afrofuturism", "Contemporary African art"],
         "related_authors": []
@@ -99,8 +97,8 @@ AUTHORS_DATABASE = {
         "unit": "art",
         "nationality": "American",
         "works": [
-            {"title": "the sky was can dy", "type": "Poem", "page": 40, "description": "Concrete poem about a sunset"},
-            {"title": "birds here,in ven ting air", "type": "Poem", "page": 40, "description": "Poem about birds and creation"}
+            {"title": "the sky was can dy", "type": "Poem", "page": 40},
+            {"title": "birds here,in ven ting air", "type": "Poem", "page": 40}
         ],
         "key_themes": ["Modernism", "Visual poetry", "Individualism", "Love and nature"],
         "biography": "Edward Estlin Cummings was an American poet, painter, and playwright known for his unconventional punctuation and syntax.",
@@ -113,9 +111,9 @@ AUTHORS_DATABASE = {
         "unit": "art",
         "nationality": "British",
         "works": [
-            {"title": "The Fighting Temeraire", "type": "Painting", "page": 38, "description": "Painting of a ship being towed to be scrapped"},
-            {"title": "Rain, Steam and Speed", "type": "Painting", "page": 51, "description": "Painting of a steam locomotive"},
-            {"title": "Snow Storm - Steam-Boat off a Harbour's Mouth", "type": "Painting", "page": 98, "description": "Dramatic storm scene"}
+            {"title": "The Fighting Temeraire", "type": "Painting", "page": 38},
+            {"title": "Rain, Steam and Speed", "type": "Painting", "page": 51},
+            {"title": "Snow Storm - Steam-Boat off a Harbour's Mouth", "type": "Painting", "page": 98}
         ],
         "key_themes": ["Sublime", "Light", "Nature", "Industrial Revolution"],
         "biography": "Joseph Mallord William Turner was a British landscape painter of the 18th and 19th centuries, known as the 'Painter of Light'.",
@@ -128,11 +126,11 @@ AUTHORS_DATABASE = {
         "unit": "art",
         "nationality": "American",
         "works": [
-            {"title": "Sex", "type": "Play", "page": 45, "description": "Broadway play about prostitution that led to her arrest"},
-            {"title": "She Done Him Wrong", "type": "Film", "page": 45, "description": "Film that saved Paramount from bankruptcy"}
+            {"title": "Sex", "type": "Play", "page": 45},
+            {"title": "She Done Him Wrong", "type": "Film", "page": 45}
         ],
         "key_themes": ["Sexuality", "Censorship", "Female empowerment", "Controversy"],
-        "biography": "Mae West was an American actress, playwright, and sex symbol known for her bawdy double entendres and independent spirit.",
+        "biography": "Mae West was an American actress, playwright, and sex symbol known for her bawdy double entendres.",
         "fun_fact": "She served eight days in jail for 'Sex' and ate dinner with the warden and his wife.",
         "focus_sections": ["Scandal in the arts"],
         "related_authors": []
@@ -142,10 +140,10 @@ AUTHORS_DATABASE = {
         "unit": "art",
         "nationality": "British",
         "works": [
-            {"title": "God Knows Why", "type": "Sculpture", "page": 43, "description": "Artwork featuring dead animals in formaldehyde"}
+            {"title": "God Knows Why", "type": "Sculpture", "page": 43}
         ],
         "key_themes": ["Death", "Controversy", "Consumerism", "Art as spectacle"],
-        "biography": "Damien Hirst is a British artist and art collector who is said to be the richest living artist, known for works exploring death.",
+        "biography": "Damien Hirst is a British artist and art collector who is said to be the richest living artist.",
         "fun_fact": "As a student, he worked in a mortuary, which influenced his work.",
         "focus_sections": ["Contemporary art"],
         "related_authors": ["Marc Quinn", "Keith Haring"]
@@ -155,10 +153,10 @@ AUTHORS_DATABASE = {
         "unit": "art",
         "nationality": "American",
         "works": [
-            {"title": "Andy Mouse 3", "type": "Artwork", "page": 47, "description": "Pop art featuring Andy Warhol as Mickey Mouse"}
+            {"title": "Andy Mouse 3", "type": "Artwork", "page": 47}
         ],
         "key_themes": ["Pop Art", "AIDS awareness", "Street art", "Accessibility"],
-        "biography": "Keith Haring was an American artist whose graffiti-inspired drawings conveyed energy and optimism before his death from AIDS.",
+        "biography": "Keith Haring was an American artist whose graffiti-inspired drawings conveyed energy and optimism.",
         "fun_fact": "He opened the Pop Shop in New York so everyone could buy affordable pieces of his work.",
         "focus_sections": ["Pop Art"],
         "related_authors": ["Andy Warhol", "Roy Lichtenstein"]
@@ -168,10 +166,10 @@ AUTHORS_DATABASE = {
         "unit": "art",
         "nationality": "British",
         "works": [
-            {"title": "Self", "type": "Sculpture", "page": 43, "description": "Self-portrait made of frozen blood"}
+            {"title": "Self", "type": "Sculpture", "page": 43}
         ],
         "key_themes": ["Identity", "Mortality", "The body", "Self-portraiture"],
-        "biography": "Marc Quinn is a British visual artist whose work explores what it means to be human through subjects including the body and genetics.",
+        "biography": "Marc Quinn is a British visual artist whose work explores what it means to be human.",
         "fun_fact": "Each Self sculpture is made of 4.5 litres of his own blood taken over five months.",
         "focus_sections": ["Contemporary art"],
         "related_authors": ["Damien Hirst"]
@@ -181,7 +179,7 @@ AUTHORS_DATABASE = {
         "unit": "art",
         "nationality": "American",
         "works": [
-            {"title": "The Catcher in the Rye", "type": "Novel", "page": 42, "description": "Controversial coming-of-age novel"}
+            {"title": "The Catcher in the Rye", "type": "Novel", "page": 42}
         ],
         "key_themes": ["Alienation", "Teenage rebellion", "Authenticity", "Censorship"],
         "biography": "J.D. Salinger was an American writer known for his reclusive nature and his novel The Catcher in the Rye.",
@@ -196,9 +194,9 @@ AUTHORS_DATABASE = {
         "unit": "debate",
         "nationality": "British",
         "works": [
-            {"title": "Richard III", "type": "Play", "page": 60, "description": "Historical play featuring persuasive rhetoric"},
-            {"title": "Much Ado About Nothing", "type": "Play", "page": 71, "description": "Comedy with witty banter and debate"},
-            {"title": "Love's Labour's Lost", "type": "Play", "page": 60, "description": "Play about wit and wordplay"}
+            {"title": "Richard III", "type": "Play", "page": 60},
+            {"title": "Much Ado About Nothing", "type": "Play", "page": 71},
+            {"title": "Love's Labour's Lost", "type": "Play", "page": 60}
         ],
         "key_themes": ["Rhetoric", "Power", "Deception", "Politics"],
         "biography": "William Shakespeare was an English playwright and poet, widely regarded as the greatest writer in the English language.",
@@ -211,7 +209,7 @@ AUTHORS_DATABASE = {
         "unit": "debate",
         "nationality": "American",
         "works": [
-            {"title": "Cabinet Battle #2", "type": "Song", "page": 66, "description": "Rap battle from Hamilton musical"}
+            {"title": "Cabinet Battle #2", "type": "Song", "page": 66}
         ],
         "key_themes": ["Debate", "Politics", "Constitution", "Economics"],
         "biography": "Alexander Hamilton was a Founding Father of the United States and the first Secretary of the Treasury.",
@@ -224,7 +222,7 @@ AUTHORS_DATABASE = {
         "unit": "debate",
         "nationality": "American",
         "works": [
-            {"title": "Immigration reform speech", "type": "Speech", "page": 62, "description": "Presidential speech on immigration"}
+            {"title": "Immigration reform speech", "type": "Speech", "page": 62}
         ],
         "key_themes": ["Rhetoric", "Hope", "Change", "Unity"],
         "biography": "Barack Obama was the 44th President of the United States and the first African American to hold the office.",
@@ -237,7 +235,7 @@ AUTHORS_DATABASE = {
         "unit": "debate",
         "nationality": "American",
         "works": [
-            {"title": "Hamilton", "type": "Musical", "page": 66, "description": "Hip-hop musical about Alexander Hamilton"}
+            {"title": "Hamilton", "type": "Musical", "page": 66}
         ],
         "key_themes": ["Storytelling", "History", "Identity", "Musical innovation"],
         "biography": "Lin-Manuel Miranda is an American actor, composer, and writer known for creating the musical Hamilton.",
@@ -250,10 +248,10 @@ AUTHORS_DATABASE = {
         "unit": "debate",
         "nationality": "American",
         "works": [
-            {"title": "The Great Debaters", "type": "Film", "page": 61, "description": "Film about a debate team"}
+            {"title": "The Great Debaters", "type": "Film", "page": 61}
         ],
         "key_themes": ["Debate", "Civil rights", "Education", "Perseverance"],
-        "biography": "Denzel Washington is an American actor and director known for roles in Malcolm X, Training Day, and The Great Debaters.",
+        "biography": "Denzel Washington is an American actor and director known for roles in Malcolm X and The Great Debaters.",
         "fun_fact": "His oldest son, John David, was drafted by the NFL's St. Louis Rams in 2006.",
         "focus_sections": ["The Great Debaters"],
         "related_authors": []
@@ -265,11 +263,11 @@ AUTHORS_DATABASE = {
         "unit": "emotions",
         "nationality": "British",
         "works": [
-            {"title": "Sense and Sensibility", "type": "Novel", "page": 90, "description": "Novel contrasting理性 and emotion"},
-            {"title": "Pride and Prejudice", "type": "Novel", "page": 101, "description": "Romantic novel with social satire"}
+            {"title": "Sense and Sensibility", "type": "Novel", "page": 90},
+            {"title": "Pride and Prejudice", "type": "Novel", "page": 101}
         ],
         "key_themes": ["Reason vs emotion", "Social class", "Marriage", "Irony"],
-        "biography": "Jane Austen was an English novelist known for her social commentary and irony in works like Pride and Prejudice.",
+        "biography": "Jane Austen was an English novelist known for her social commentary and irony.",
         "fun_fact": "The 'Janeties' fan club was created in 1870 and still exists today!",
         "focus_sections": ["Stiff upper lip"],
         "related_authors": ["Emily Brontë"]
@@ -279,7 +277,7 @@ AUTHORS_DATABASE = {
         "unit": "emotions",
         "nationality": "British",
         "works": [
-            {"title": "Wuthering Heights", "type": "Novel", "page": 96, "description": "Gothic novel of passion and revenge"}
+            {"title": "Wuthering Heights", "type": "Novel", "page": 96}
         ],
         "key_themes": ["Passion", "Romanticism", "Nature", "Obsession"],
         "biography": "Emily Brontë was an English novelist and poet, best known for her only novel, Wuthering Heights.",
@@ -292,7 +290,7 @@ AUTHORS_DATABASE = {
         "unit": "emotions",
         "nationality": "British",
         "works": [
-            {"title": "Grief is the Thing with Feathers", "type": "Novel", "page": 94, "description": "Experimental novel about grief"}
+            {"title": "Grief is the Thing with Feathers", "type": "Novel", "page": 94}
         ],
         "key_themes": ["Grief", "Loss", "Family", "Healing"],
         "biography": "Max Porter is a British writer and bookseller, best known for his debut novel Grief is the Thing with Feathers.",
@@ -305,7 +303,7 @@ AUTHORS_DATABASE = {
         "unit": "emotions",
         "nationality": "British",
         "works": [
-            {"title": "Boys Don't Cry", "type": "Song", "page": 93, "description": "Song about male emotional repression"}
+            {"title": "Boys Don't Cry", "type": "Song", "page": 93}
         ],
         "key_themes": ["Emotional repression", "Masculinity", "Vulnerability"],
         "biography": "The Cure is an English rock band formed in 1976, known for their Gothic rock and post-punk sound.",
@@ -320,7 +318,7 @@ AUTHORS_DATABASE = {
         "unit": "bildungsroman",
         "nationality": "British",
         "works": [
-            {"title": "Oliver Twist", "type": "Novel", "page": 129, "description": "Novel about an orphan's journey"}
+            {"title": "Oliver Twist", "type": "Novel", "page": 129}
         ],
         "key_themes": ["Social criticism", "Childhood", "Poverty", "Identity"],
         "biography": "Charles Dickens was an English writer and social critic, regarded as the greatest novelist of the Victorian era.",
@@ -333,7 +331,7 @@ AUTHORS_DATABASE = {
         "unit": "bildungsroman",
         "nationality": "British",
         "works": [
-            {"title": "Harry Potter and the Philosopher's Stone", "type": "Novel", "page": 129, "description": "Fantasy coming-of-age novel"}
+            {"title": "Harry Potter and the Philosopher's Stone", "type": "Novel", "page": 129}
         ],
         "key_themes": ["Coming of age", "Friendship", "Good vs evil", "Identity"],
         "biography": "J.K. Rowling is a British author best known for the Harry Potter fantasy series.",
@@ -346,7 +344,7 @@ AUTHORS_DATABASE = {
         "unit": "bildungsroman",
         "nationality": "American",
         "works": [
-            {"title": "Still I Rise", "type": "Poem", "page": 130, "description": "Empowering poem about resilience"}
+            {"title": "Still I Rise", "type": "Poem", "page": 130}
         ],
         "key_themes": ["Resilience", "Identity", "Race", "Feminism"],
         "biography": "Maya Angelou was an American poet, memoirist, and civil rights activist.",
@@ -361,7 +359,7 @@ AUTHORS_DATABASE = {
         "unit": "music",
         "nationality": "American",
         "works": [
-            {"title": "The Times They Are A-Changing", "type": "Song", "page": 182, "description": "Protest song of the 1960s"}
+            {"title": "The Times They Are A-Changing", "type": "Song", "page": 182}
         ],
         "key_themes": ["Protest", "Social change", "Poetry", "Counterculture"],
         "biography": "Bob Dylan is an American singer-songwriter and Nobel Prize laureate in Literature.",
@@ -374,7 +372,7 @@ AUTHORS_DATABASE = {
         "unit": "music",
         "nationality": "American",
         "works": [
-            {"title": "To Be Young, Gifted and Black", "type": "Song", "page": 181, "description": "Anthem of Black pride"}
+            {"title": "To Be Young, Gifted and Black", "type": "Song", "page": 181}
         ],
         "key_themes": ["Civil rights", "Black identity", "Empowerment"],
         "biography": "Nina Simone was an American singer, songwriter, and civil rights activist.",
@@ -387,7 +385,7 @@ AUTHORS_DATABASE = {
         "unit": "music",
         "nationality": "American",
         "works": [
-            {"title": "Born in the USA", "type": "Song", "page": 181, "description": "Often misunderstood patriotic song"}
+            {"title": "Born in the USA", "type": "Song", "page": 181}
         ],
         "key_themes": ["Working class", "America", "Patriotism", "Social criticism"],
         "biography": "Bruce Springsteen is an American singer-songwriter known for his heartland rock sound and working-class themes.",
@@ -402,7 +400,7 @@ AUTHORS_DATABASE = {
         "unit": "migration",
         "nationality": "American",
         "works": [
-            {"title": "The Migration Series", "type": "Painting", "page": 200, "description": "Series depicting the Great Migration"}
+            {"title": "The Migration Series", "type": "Painting", "page": 200}
         ],
         "key_themes": ["Migration", "African American experience", "History", "Identity"],
         "biography": "Jacob Lawrence was an American painter known for his portrayal of African American historical subjects.",
@@ -415,7 +413,7 @@ AUTHORS_DATABASE = {
         "unit": "migration",
         "nationality": "American",
         "works": [
-            {"title": "The Joy Luck Club", "type": "Novel", "page": 203, "description": "Novel about Chinese-American mothers and daughters"}
+            {"title": "The Joy Luck Club", "type": "Novel", "page": 203}
         ],
         "key_themes": ["Immigration", "Mother-daughter relationships", "Identity", "Cultural conflict"],
         "biography": "Amy Tan is an American writer whose work explores mother-daughter relationships and the Chinese-American experience.",
@@ -428,7 +426,7 @@ AUTHORS_DATABASE = {
         "unit": "migration",
         "nationality": "British",
         "works": [
-            {"title": "White Teeth", "type": "Novel", "page": 220, "description": "Novel about multicultural London"}
+            {"title": "White Teeth", "type": "Novel", "page": 220}
         ],
         "key_themes": ["Multiculturalism", "Identity", "Race", "London"],
         "biography": "Zadie Smith is a British novelist and essayist known for her debut novel White Teeth.",
@@ -585,4 +583,78 @@ EXAM_STRUCTURE = {
         "coef": 10,
         "skills": ["Public speaking", "Argumentation", "Critical thinking", "Motivation"]
     },
-    "
+    "level": "B2/C1 CEFR"
+}
+
+@app.route("/")
+def home():
+    return jsonify({
+        "status": "running",
+        "service": "LLCE BAC English Specialty Assistant - Complete Edition",
+        "version": "3.0",
+        "features": [
+            "Complete author database with 40+ authors",
+            "Unit-specific resource mapping",
+            "Page-by-page textbook navigation",
+            "BAC exam integration",
+            "Guided analysis methodology",
+            "Portfolio building assistance"
+        ],
+        "curriculum_units": list(LLCE_UNITS.keys()),
+        "authors_available": len(AUTHORS_DATABASE),
+        "endpoints": {
+            "chat": "/chat (POST)",
+            "unit": "/unit/<unit_name> (GET)",
+            "author": "/author/<author_name> (GET)",
+            "search": "/search?q=<query> (GET)",
+            "exam": "/exam/<component> (GET)"
+        }
+    })
+
+@app.route("/unit/<unit_name>")
+def get_unit(unit_name):
+    """Get detailed information about a specific LLCE unit"""
+    unit = LLCE_UNITS.get(unit_name)
+    if not unit:
+        return jsonify({"error": "Unit not found"}), 404
+    return jsonify(unit)
+
+@app.route("/author/<author_name>")
+def get_author(author_name):
+    """Get detailed information about a specific author"""
+    # Try to find the author (case-insensitive)
+    author_key = author_name.lower().strip()
+    
+    # Direct match
+    if author_key in AUTHORS_DATABASE:
+        return jsonify(AUTHORS_DATABASE[author_key])
+    
+    # Partial match
+    for key, author in AUTHORS_DATABASE.items():
+        if author_key in key or key in author_key:
+            return jsonify(author)
+    
+    return jsonify({"error": "Author not found"}), 404
+
+@app.route("/search")
+def search_textbook():
+    """Search for specific topics, authors, or terms in the textbook"""
+    query = request.args.get('q', '').lower()
+    if not query:
+        return jsonify({"error": "Search query required"}), 400
+    
+    results = []
+    
+    # Search authors
+    for key, author in AUTHORS_DATABASE.items():
+        if query in key or query in author['name'].lower():
+            results.append({
+                "type": "author",
+                "name": author['name'],
+                "unit": author['unit'],
+                "works": [w['title'] for w in author['works']]
+            })
+    
+    # Search units
+    for unit_key, unit in LLCE_UNITS.items():
+        if query in unit['title'].lower()
