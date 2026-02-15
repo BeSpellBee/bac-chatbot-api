@@ -388,22 +388,41 @@ def get_exam_info(component):
         return jsonify(EXAM_STRUCTURE[component])
     return jsonify({"error": "Exam component not found"}), 404
 
-# ============ NEW FUNCTION: Extract page number from query ============
+# ============ FIXED: Extract page number from query with better patterns ============
 def extract_page_number(user_message):
-    """Extract page number from query like 'page 40', 'p.40', or 'on page 40'"""
-    patterns = [
-        r'page\s+(\d+)',
-        r'p\.?\s*(\d+)',
-        r'pg\s*(\d+)',
-        r'on\s+page\s+(\d+)'
-    ]
-    for pattern in patterns:
-        match = re.search(pattern, user_message.lower())
-        if match:
-            return int(match.group(1))
+    """Extract page number from query like 'page 40', 'page40', 'p.40', or 'p40'"""
+    user_lower = user_message.lower()
+    
+    # Pattern 1: "page 40" or "page40" (with or without space)
+    match = re.search(r'page\s*(\d+)', user_lower)
+    if match:
+        return int(match.group(1))
+    
+    # Pattern 2: "p.40" or "p40" (with or without dot)
+    match = re.search(r'p\.?\s*(\d+)', user_lower)
+    if match:
+        return int(match.group(1))
+    
+    # Pattern 3: "pg 40" or "pg40"
+    match = re.search(r'pg\s*(\d+)', user_lower)
+    if match:
+        return int(match.group(1))
+    
+    # Pattern 4: "on page 40"
+    match = re.search(r'on\s+page\s+(\d+)', user_lower)
+    if match:
+        return int(match.group(1))
+    
+    # Pattern 5: "questions on 40" - but only if it's a standalone number that might be a page
+    # This is riskier, so we'll only use it if the message is short and contains a number
+    if len(user_lower.split()) <= 3:
+        numbers = re.findall(r'\b(\d{2,3})\b', user_lower)
+        if numbers and any(int(n) in PAGE_QUESTIONS for n in numbers):
+            return int(numbers[0])
+    
     return None
 
-# ============ NEW FUNCTION: Generate page response ============
+# ============ FIXED: Generate page response with better formatting ============
 def generate_page_response(page_num):
     """Generate a formatted response for page-specific questions"""
     if page_num not in PAGE_QUESTIONS:
@@ -411,10 +430,11 @@ def generate_page_response(page_num):
     
     page_data = PAGE_QUESTIONS[page_num]
     response = f"📚 **PAGE {page_num}: {page_data['title']}**\n\n"
+    response += f"*Unit: {page_data['unit'].title()} | Author: {page_data['author']}*\n\n"
     
     for item in page_data['content']:
         if item.get('title'):
-            response += f"**{item['title']}**\n\n"
+            response += f"**📖 {item['title']}**\n\n"
         
         for q in item.get('questions', []):
             response += f"**Question {q['number']}:** {q['question']}\n"
@@ -436,16 +456,25 @@ def chat():
     if not user_message:
         return jsonify({"error": "Message is required"}), 400
 
-    # ============ NEW: PRIORITY 1 - Check if asking about a specific page ============
+    # ============ FIXED: PRIORITY 1 - Check if asking about a specific page ============
     page_num = extract_page_number(user_message)
-    if page_num and page_num in PAGE_QUESTIONS:
-        page_response = generate_page_response(page_num)
-        return jsonify({
-            "reply": page_response,
-            "type": "page_response",
-            "page": page_num,
-            "source": "page_database"
-        })
+    print(f"DEBUG - Extracted page number: {page_num}")  # Add debug print
+    
+    if page_num:
+        if page_num in PAGE_QUESTIONS:
+            page_response = generate_page_response(page_num)
+            print(f"DEBUG - Found page {page_num} in database, returning response")
+            return jsonify({
+                "reply": page_response,
+                "type": "page_response",
+                "page": page_num,
+                "source": "page_database"
+            })
+        else:
+            # Page number detected but not in database
+            print(f"DEBUG - Page {page_num} not in database")
+            # Continue to normal flow, but we could add a message
+            pass
 
     # Detect unit and topic
     unit_key = detect_llce_unit(user_lower)
@@ -629,30 +658,4 @@ def detect_exam_component(user_lower):
         return "oral_exam"
     elif any(word in user_lower for word in ['grand oral', 'orientation', 'project', 'projet']):
         return "grand_oral"
-    elif any(word in user_lower for word in ['translation', 'translate', '600 characters', 'traduction']):
-        return "translation"
-    return "general_preparation"
-
-def generate_llce_deep_dive(user_message: str, user_lower: str, unit_key: Optional[str], 
-                            unit_data: Optional[Dict], topic: Optional[str]) -> str:
-    """Generate LLCE-specific deep dive responses following the 5-phase framework."""
-    
-    # E.E. CUMMINGS DEEP DIVE (from page 40)
-    if unit_key == "art" and any(term in user_lower for term in ['cummings', 'poem', 'sky', 'birds']):
-        return f"""1. 📚 SOURCE GROUNDING - TEXTBOOK CONTEXT
-- **LLCE Unit:** {unit_data['title']} (pages {unit_data['pages']})
-- **Theme:** {unit_data.get('theme')}
-- **Specific Document:** E.E. Cummings poems on **page 40**
-- **Focus Section:** "Modernist poetry" on **page 48** and E.E. Cummings biography on **page 48**
-
-2. 🎯 PRESENT THE CORE MATERIALS
-Your textbook provides these resources on E.E. Cummings:
-
-**Primary Texts (page 40):**
-- Poem 1: "the sky was can dy" - a concrete poem about a sunset/sky
-- Poem 2: "birds here,in ven ting air" - about birds and creation/invention
-
-**Textbook Questions (page 40):**
-1. "Present in one sentence the subject of the two poems."
-2. "Read Let's focus on... Modernist poetry, p. 48. Identify what makes these poems modern and draw a parallel with modernist poetry."
-3. "Explain how this original form gives access to the
+    elif any(word in user_lower for word in ['translation', 'translate', '600 characters', '
