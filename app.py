@@ -438,19 +438,14 @@ def chat():
 
     # ============ NEW: PRIORITY 1 - Check if asking about a specific page ============
     page_num = extract_page_number(user_message)
-    if page_num:
+    if page_num and page_num in PAGE_QUESTIONS:
         page_response = generate_page_response(page_num)
-        if page_response:
-            return jsonify({
-                "reply": page_response,
-                "type": "page_response",
-                "page": page_num,
-                "source": "page_database"
-            })
-        # If page not in database, continue to normal flow but mention it
-        else:
-            # We'll let it fall through to normal processing, but add a note
-            pass
+        return jsonify({
+            "reply": page_response,
+            "type": "page_response",
+            "page": page_num,
+            "source": "page_database"
+        })
 
     # Detect unit and topic
     unit_key = detect_llce_unit(user_lower)
@@ -659,4 +654,5 @@ Your textbook provides these resources on E.E. Cummings:
 
 **Textbook Questions (page 40):**
 1. "Present in one sentence the subject of the two poems."
-2. "Read Let's focus on... Modernist poetry, p. 48. Identify what makes these poems
+2. "Read Let's focus on... Modernist poetry, p. 48. Identify what makes these poems modern and draw a parallel with modernist poetry."
+3. "Explain how this original form gives access to the
